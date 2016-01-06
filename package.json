@@ -1,0 +1,15 @@
+{
+  "name": "realtime-forum",
+  "version": "1.0.0",
+  "description": "Simple forum example using socket.io.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexander Bogomolov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "sequelize": "^3.16.0"
+  }
+}
