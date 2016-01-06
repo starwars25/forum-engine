@@ -1,15 +1,4 @@
-switch(process.argv[2]) {
-    case 'test':
-        process.env.NODE_ENVIRONMENT = 'test';
-        break;
-    case 'production':
-        process.env.NODE_ENVIRONMENT = 'production';
-        break;
-    default:
-        process.env.NODE_ENVIRONMENT = 'development';
-        break;
-}
-
+require('./environment')();
 var express = require('express');
 var util = require('util');
 var app = express();
