@@ -51,6 +51,80 @@ var User = sequelize.define('User', {
         allowNull: false
     }
 });
+var Topic = sequelize.define('Topic', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    theme: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    content: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    closed: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    closed_at: {
+        type: Sequelize.DATE
+    }
+});
+var Opinion = sequelize.define('Opinion', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    content: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    }
+});
+var Comment = sequelize.define('Comment', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    content: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    }
+});
+var Upvote = sequelize.define('Upvote', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    value: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    }
+});
+User.hasMany(Topic);
+Topic.belongsTo(User);
+User.hasMany(Opinion);
+Opinion.belongsTo(User);
+User.hasMany(Comment);
+Comment.belongsTo(User);
+User.hasMany(Upvote);
+Upvote.belongsTo(User);
+Topic.hasMany(Opinion);
+Opinion.belongsTo(Topic);
+Opinion.hasMany(Comment);
+Comment.belongsTo(Opinion);
+Opinion.hasMany(Upvote);
+Upvote.belongsTo(Opinion);
+
 module.exports = {
-    User: User
+    User: User,
+    Topic: Topic,
+    Opinion: Opinion,
+    Comment: Comment,
+    Upvote: Upvote
 };
