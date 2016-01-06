@@ -2,7 +2,7 @@
 
 RealtimeForum is a realization of simple forum web application, main feature of the project is the fact that forum is real timed, new posts will appear instantly after they were created.
 
-Realtime features will be implemented using Socket.io.
+Realtime features will be implemented using [Socket.io](http://socket.io).
 
 Authorization is performed via popular social network [vk.com](http://vk.com/).
 
