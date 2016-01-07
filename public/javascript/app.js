@@ -10,7 +10,6 @@ app.factory('$common', ['$cookies', function($cookies) {
             return !!($cookies.get('user-id') && $cookies.get('token'));
         },
         logOut: function() {
-            console.log('removeing cookies');
             $cookies.remove('user-id');
             $cookies.remove('token');
         }
@@ -18,7 +17,7 @@ app.factory('$common', ['$cookies', function($cookies) {
 }]);
 
 app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function($scope, $common, $http, $window) {
-    $scope.loggedIn = $common.loggedIn();
+    $scope.loggedIn = $common.loggedIn;
     $scope.logIn = function() {
         $http({
             method: 'GET',
