@@ -39,6 +39,18 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function(
 
 app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function($scope, $common, $window, $http) {
     $common.redirectIfNotLoggedIn();
+    var fetchUser = function() {
+        $http({
+            method: 'GET',
+            url: '/current-user',
+            withCredentials: true
+        }).then(function success(response) {
+            $scope.user = response.data;
+        }, function failure(response) {
+            alert('Error fetching user.');
+        });
+    };
+    fetchUser();
 }]);
 
 app.directive('appHeader', function () {

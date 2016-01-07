@@ -1,6 +1,7 @@
 module.exports = function(app) {
     var util = require('util');
     var vkauth = require('vkauth');
+    var bcrypt = require('bcrypt');
     vkauth.config.client_id = Number(process.env.VK_CLIENT_ID);
     vkauth.config.app_secret = process.env.VK_APP_SECRET;
     vkauth.config.host = 'localhost:3000';
@@ -49,21 +50,42 @@ module.exports = function(app) {
                     }).then(function(instance) {
                         if (instance) {
                             console.log("User with id %d found.", user.vk_user_id);
-                            instance.update({name: name, avatar_url: user.avatar_url}).then(function(instance) {
-                                sendAuthCredentials(res, token);
-                            }).catch(function(error) {
-                                console.log(error);
-                                sendError(res);
+                            bcrypt.genSalt(10, function(err, salt) {
+                                bcrypt.hash(token.access_token, salt, function(err, hash) {
+                                    if (err) {
+                                        sendError(res);
+                                    } else {
+                                        instance.update({name: name, avatar_url: user.avatar_url, token_digest: hash}).then(function(instance) {
+                                            sendAuthCredentials(res, token);
+                                        }).catch(function(error) {
+                                            console.log(error);
+                                            sendError(res);
+                                        });
+                                    }
+                                });
                             });
+
+
                         } else {
                             console.log("User with id %d not found.", user.vk_user_id);
-                            model.User.create(user).then(function(instance) {
-                                console.log("User with id %d created.", user.vk_user_id);
-                                sendAuthCredentials(res, token);
-                            }).catch(function(error) {
-                                console.log(error);
-                                sendError(res);
+                            bcrypt.genSalt(10, function(err, salt) {
+                                bcrypt.hash('B4c0/\/', salt, function(err, hash) {
+                                    if (err) {
+                                        sendError(res);
+                                    } else {
+                                        user.token_digest = hash;
+                                        model.User.create(user).then(function(instance) {
+                                            console.log("User with id %d created.", user.vk_user_id);
+                                            sendAuthCredentials(res, token);
+                                        }).catch(function(error) {
+                                            console.log(error);
+                                            sendError(res);
+                                        });
+                                    }
+                                });
                             });
+
+
                         }
                     }).catch(function(error) {
                         console.log(error);

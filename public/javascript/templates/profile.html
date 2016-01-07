@@ -1,1 +1,9 @@
 <h1>Profile</h1>
+<h2>Hello, {{user.name}}</h2>
+<img ng-src="{{user.avatar_url}}" />
+<form>
+    <label>Nickname:</label>
+    <input type="text" ng-model="user.nickname">
+    <br>
+    <button type="submit">Change nickname</button>
+</form>

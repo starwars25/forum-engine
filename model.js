@@ -54,6 +54,10 @@ var User = sequelize.define('User', {
     admin: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    token_digest: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 });
 var Topic = sequelize.define('Topic', {
