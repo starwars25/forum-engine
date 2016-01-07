@@ -28,6 +28,11 @@ var User = sequelize.define('User', {
         primaryKey: true,
         autoIncrement: true
     },
+    vk_user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        unique: true
+    },
     name: {
         type: Sequelize.STRING,
         allowNull: false

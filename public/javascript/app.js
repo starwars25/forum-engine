@@ -8,6 +8,11 @@ app.factory('$common', ['$cookies', function($cookies) {
     return {
         loggedIn: function() {
             return !!($cookies.get('user-id') && $cookies.get('token'));
+        },
+        logOut: function() {
+            console.log('removeing cookies');
+            $cookies.remove('user-id');
+            $cookies.remove('token');
         }
     }
 }]);
@@ -25,6 +30,7 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function(
             alert('Unknown error.')
         });
     };
+    $scope.logOut = $common.logOut;
 }]);
 
 app.directive('appHeader', function () {
