@@ -1,5 +1,6 @@
 <h1>Realtime Chat</h1>
 <ul>
     <li ng-hide="loggedIn()"><a href="" ng-click="logIn()">Log In</a></li>
+    <li ng-show="loggedIn()"><a href="/#/profile">Profile</a></li>
     <li ng-show="loggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
 </ul>
