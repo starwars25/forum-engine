@@ -51,9 +51,15 @@ app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function(re
     });
 });
 app.post('/topics', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
-    model.Topic.create({UserId: req.currentUser.id, theme: req.body.topic.theme, content: req.body.topic.content, closed: false}).then(function (instance) {
-        res.sendStatus(201);
+    model.Topic.create({UserId: req.currentUser.id, theme: req.body.topic.theme, closed: false}).then(function (instance) {
+        model.Opinion.create({UserId: req.currentUser.id, content: req.body.topic.content, root: true}).then(function(instance) {
+            res.sendStatus(201);
+        }).catch(function(error) {
+            console.log(error);
+            res.sendStatus(400);
+        });
     }).catch(function(err) {
+        console.log(err);
         res.sendStatus(400);
     });
 });
@@ -65,6 +71,43 @@ app.get('/topics', function(req, res) {
     }).catch(function(error) {
         console.log(error);
         res.sendStatus(500);
+    });
+});
+app.get('/topics/:id/opinions', function(req, res) {
+
+    var json = {};
+    async.parallel([function(callback) {
+        model.Opinion.sequelize.query("SELECT Opinions.content, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
+            type: model.sequelize.QueryTypes.SELECT,
+            replacements: [req.params.id]
+        }).then(function(opinions) {
+            json.opinions = opinions;
+            callback();
+        }).catch(function(error) {
+            callback(error);
+        });
+    }, function(callback) {
+        model.Opinion.sequelize.query("SELECT Topics.theme FROM Topics  WHERE Topics.id = ?;", {
+            type: model.sequelize.QueryTypes.SELECT,
+            replacements: [req.params.id]
+        }).then(function(topics) {
+            try {
+                json.theme = topics[0].theme;
+                callback();
+
+            } catch (e) {
+                callback(e);
+            }
+        }).catch(function(error) {
+            callback(error);
+        });
+    }], function(err, result) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(400);
+        } else {
+            res.json(json);
+        }
     });
 });
 app.use(express.static('public'));

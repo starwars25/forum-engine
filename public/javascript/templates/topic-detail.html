@@ -1,0 +1,7 @@
+<h1>{{topic.theme}}</h1>
+<div ng-repeat="opinion in topic.opinions">
+    <h3>{{opinion.nickname}}</h3>
+    <img ng-src="{{opinion.avatar_url}}" />
+    <p>{{opinion.content}}</p>
+
+</div>

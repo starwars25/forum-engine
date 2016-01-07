@@ -107,7 +107,18 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
 }]);
 
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
-
+    $scope.fetchOpinions = function() {
+        $http({
+            method: 'GET',
+            url: '/topics/' + $routeParams.id + '/opinions'
+        }).then(function success(response) {
+            console.log(response.data);
+            $scope.topic = response.data;
+        }, function error(response) {
+            alert('Error while fetching topics.');
+        });
+    };
+    $scope.fetchOpinions();
 }]);
 
 app.directive('appHeader', function () {

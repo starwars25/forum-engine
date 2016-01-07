@@ -1,5 +1,5 @@
 module.exports = function (app) {
-    var noUser = function(next) {
+    var noUser = function(req, next) {
         req.currentUser = null;
         next();
     };
@@ -11,24 +11,24 @@ module.exports = function (app) {
                 if (instance) {
                     bcrypt.compare(req.cookies['token'], instance.token_digest, function (err, res) {
                         if (err) {
-                            noUser(next);
+                            noUser(req, next);
                         } else {
                             if (res) {
                                 req.currentUser = instance;
                                 next();
                             } else {
-                                noUser(next);
+                                noUser(req, next);
                             }
                         }
                     });
                 } else {
-                    noUser(next);
+                    noUser(req, next);
                 }
             }).catch(function (err) {
-                noUser(next);
+                noUser(req, next);
             });
         } else {
-            noUser(next);
+            noUser(req, next);
         }
     };
     return currentUser;

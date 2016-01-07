@@ -76,13 +76,6 @@ var Topic = sequelize.define('Topic', {
             len: [4, 140]
         }
     },
-    content: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        validate: {
-            len: [2]
-        }
-    },
     closed: {
         type: Sequelize.BOOLEAN,
         allowNull: false
@@ -104,6 +97,10 @@ var Opinion = sequelize.define('Opinion', {
             len: [2]
 
         }
+    },
+    root: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 });
 var Comment = sequelize.define('Comment', {
