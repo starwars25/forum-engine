@@ -135,5 +135,6 @@ module.exports = {
     Topic: Topic,
     Opinion: Opinion,
     Comment: Comment,
-    Upvote: Upvote
+    Upvote: Upvote,
+    sequelize: sequelize
 };

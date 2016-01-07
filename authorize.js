@@ -1,4 +1,8 @@
 module.exports = function (app) {
+    var noUser = function(next) {
+        req.currentUser = null;
+        next();
+    };
     var model = require('./model');
     var bcrypt = require('bcrypt');
     var currentUser = function (req, res, next) {
@@ -7,33 +11,25 @@ module.exports = function (app) {
                 if (instance) {
                     bcrypt.compare(req.cookies['token'], instance.token_digest, function (err, res) {
                         if (err) {
-                            req.currentUser = null;
-                            next();
+                            noUser(next);
                         } else {
                             if (res) {
                                 req.currentUser = instance;
                                 next();
                             } else {
-                                req.currentUser = null;
-                                next();
+                                noUser(next);
                             }
                         }
                     });
-
                 } else {
-                    req.currentUser = null;
-                    next();
+                    noUser(next);
                 }
             }).catch(function (err) {
-                req.currentUser = null;
-                next();
+                noUser(next);
             });
         } else {
-            req.currentUser = null;
-            next();
-
+            noUser(next);
         }
     };
     return currentUser;
-
 };
