@@ -1,0 +1,17 @@
+<h1>New Topic</h1>
+<h3>Preview</h3>
+<div>
+    <h1>{{topic.theme}}</h1>
+    <p>{{topic.content}}</p>
+</div>
+<form name="createTopicForm">
+    <label>Theme</label>
+    <br>
+    <input type="text" ng-model="topic.theme">
+    <br>
+    <textarea ng-model="topic.content">
+
+    </textarea>
+    <br>
+    <button type="submit">Create Topic</button>
+</form>

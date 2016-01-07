@@ -1,7 +1,7 @@
 var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
 
-app.controller('IndexCtrl', ['$scope', function ($scope) {
-    $scope.test = 'Hello, World'
+app.controller('IndexCtrl', ['$scope', '$common', function ($scope, $common) {
+    $scope.loggedIn = $common.loggedIn;
 }]);
 
 app.factory('$common', ['$cookies', '$window', function($cookies, $window) {
@@ -35,6 +35,10 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function(
         });
     };
     $scope.logOut = $common.logOut;
+}]);
+
+app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function($scope, $common, $http) {
+    $common.redirectIfNotLoggedIn();
 }]);
 
 app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function($scope, $common, $window, $http) {
@@ -89,6 +93,10 @@ app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/profile', {
         templateUrl: '/javascript/templates/profile.html',
         controller: 'ProfileCtrl'
+    });
+    $routeProvider.when('/new-topic', {
+        templateUrl: '/javascript/templates/new-topic.html',
+        controller: 'NewTopicCtrl'
     });
     $routeProvider.otherwise('/not-found');
 }]);
