@@ -42,7 +42,6 @@ module.exports = function(app) {
                         banned: false,
                         admin: false
                     };
-                    console.log(user);
                     model.User.findOne({
                         where: {
                             vk_user_id: user.vk_user_id
