@@ -50,6 +50,23 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
             alert('Error fetching user.');
         });
     };
+    $scope.changeNickname = function() {
+        $http({
+            method: 'PUT',
+            url: '/update-user',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: {
+                nickname: $scope.user.nickname
+            },
+            withCredentials: true
+        }).then(function success(response) {
+            alert('Nickname updated.');
+        }, function failure(response) {
+            alert('Error updating nickname.');
+        });
+    };
     fetchUser();
 }]);
 

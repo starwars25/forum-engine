@@ -3,6 +3,7 @@ var express = require('express');
 var util = require('util');
 var app = express();
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 app.use(cookieParser());
 var model = require('./model');
 var async = require('async');
@@ -41,6 +42,13 @@ app.get('/current-user', currentUser, notLoggedIn, function (req, res) {
     });
 
 
+});
+app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
+    req.currentUser.update({nickname: req.body.nickname}).then(function (instance) {
+        res.sendStatus(201);
+    }).catch(function(error) {
+        res.sendStatus(400);
+    });
 });
 app.use(express.static('public'));
 var server = app.listen(3000, function () {

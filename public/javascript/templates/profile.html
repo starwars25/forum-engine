@@ -1,9 +1,10 @@
 <h1>Profile</h1>
 <h2>Hello, {{user.name}}</h2>
 <img ng-src="{{user.avatar_url}}" />
-<form>
+<form name="changeNicknameForm" ng-submit="changeNicknameForm.$valid && changeNickname()">
+    <p ng-hide="changeNicknameForm.$valid">Invalid</p>
     <label>Nickname:</label>
-    <input type="text" ng-model="user.nickname">
+    <input type="text" ng-model="user.nickname" minlength="4" maxlength="50" required>
     <br>
     <button type="submit">Change nickname</button>
 </form>

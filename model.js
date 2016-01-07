@@ -39,7 +39,10 @@ var User = sequelize.define('User', {
     },
     nickname: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [4, 50]
+        }
     },
     avatar_url: {
         type: Sequelize.STRING
