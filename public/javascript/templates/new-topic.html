@@ -1,17 +1,16 @@
-<h1>New Topic</h1>
-<h3>Preview</h3>
-<div>
-    <h1>{{topic.theme}}</h1>
-    <p>{{topic.content}}</p>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-4 col-lg-6 col-lg-offset-3">
+        <h1>New Topic</h1>
+        <form name="createTopicForm" ng-submit="createTopic()">
+            <div class="form-group" ng-class="{'has-error': createTopicForm.theme.$invalid && createTopicForm.theme.$dirty}">
+                <label>Theme</label>
+                <input type="text" ng-model="topic.theme" class="form-control" name="theme" minlength="4" required>
+            </div>
+            <div class="form-group" ng-class="{'has-error': createTopicForm.content.$invalid && createTopicForm.content.$dirty}">
+                <label>Content</label>
+                <textarea ng-model="topic.content" class="form-control" name="content" minlength="2" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Topic</button>
+        </form>
+    </div>
 </div>
-<form name="createTopicForm" ng-submit="createTopic()">
-    <label>Theme</label>
-    <br>
-    <input type="text" ng-model="topic.theme">
-    <br>
-    <textarea ng-model="topic.content">
-
-    </textarea>
-    <br>
-    <button type="submit">Create Topic</button>
-</form>
