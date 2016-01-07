@@ -2,7 +2,7 @@ var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
 
 app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
-    $scope.fetchTopics = function() {
+    $scope.fetchTopics = function () {
         $http({
             method: 'GET',
             url: '/topics'
@@ -16,16 +16,16 @@ app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $co
     $scope.fetchTopics();
 }]);
 
-app.factory('$common', ['$cookies', '$window', function($cookies, $window) {
+app.factory('$common', ['$cookies', '$window', function ($cookies, $window) {
     return {
-        loggedIn: function() {
+        loggedIn: function () {
             return !!($cookies.get('user-id') && $cookies.get('token'));
         },
-        logOut: function() {
+        logOut: function () {
             $cookies.remove('user-id');
             $cookies.remove('token');
         },
-        redirectIfNotLoggedIn: function() {
+        redirectIfNotLoggedIn: function () {
             if (!this.loggedIn()) {
                 $window.location.href = '/';
             }
@@ -33,9 +33,9 @@ app.factory('$common', ['$cookies', '$window', function($cookies, $window) {
     }
 }]);
 
-app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function($scope, $common, $http, $window) {
+app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function ($scope, $common, $http, $window) {
     $scope.loggedIn = $common.loggedIn;
-    $scope.logIn = function() {
+    $scope.logIn = function () {
         $http({
             method: 'GET',
             url: '/vk-url'
@@ -49,9 +49,9 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function(
     $scope.logOut = $common.logOut;
 }]);
 
-app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function($scope, $common, $http) {
+app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $common.redirectIfNotLoggedIn();
-    $scope.createTopic = function() {
+    $scope.createTopic = function () {
         console.log('Create topic');
         $http({
             method: 'POST',
@@ -73,9 +73,9 @@ app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function($scope, $
     };
 }]);
 
-app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function($scope, $common, $window, $http) {
+app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function ($scope, $common, $window, $http) {
     $common.redirectIfNotLoggedIn();
-    var fetchUser = function() {
+    var fetchUser = function () {
         $http({
             method: 'GET',
             url: '/current-user',
@@ -86,7 +86,7 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
             alert('Error fetching user.');
         });
     };
-    $scope.changeNickname = function() {
+    $scope.changeNickname = function () {
         $http({
             method: 'PUT',
             url: '/update-user',
@@ -106,8 +106,8 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     fetchUser();
 }]);
 
-app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
-    $scope.fetchOpinions = function() {
+app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function ($scope, $routeParams, $http) {
+    $scope.fetchOpinions = function () {
         $http({
             method: 'GET',
             url: '/topics/' + $routeParams.id + '/opinions'
@@ -119,6 +119,28 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function($
         });
     };
     $scope.fetchOpinions();
+    $scope.newOpinion = {};
+    $scope.createOpinion = function () {
+        $http({
+            method: 'POST',
+            url: '/opinions',
+            withCredentials: true,
+            data: {
+                opinion: {
+                    topic_id: $routeParams.id,
+                    content: $scope.newOpinion.content
+                }
+
+            },
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(function success(res) {
+            $scope.fetchOpinions();
+        }, function failure(res) {
+            alert('Error while posting opinion.');
+        });
+    };
 }]);
 
 app.directive('appHeader', function () {

@@ -5,3 +5,10 @@
     <p>{{opinion.content}}</p>
 
 </div>
+<form ng-show="loggedIn()" name="createOpinionForm" ng-submit="createOpinionForm.$valid && createOpinion()">
+    <label>Content</label>
+    <br>
+    <textarea ng-model="newOpinion.content" minlength="2"></textarea>
+    <br>
+    <button type="submit">Submit</button>
+</form>

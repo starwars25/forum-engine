@@ -43,54 +43,63 @@ app.get('/current-user', currentUser, notLoggedIn, function (req, res) {
 
 
 });
-app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
+app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
     req.currentUser.update({nickname: req.body.nickname}).then(function (instance) {
         res.sendStatus(201);
-    }).catch(function(error) {
+    }).catch(function (error) {
         res.sendStatus(400);
     });
 });
-app.post('/topics', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
-    model.Topic.create({UserId: req.currentUser.id, theme: req.body.topic.theme, closed: false}).then(function (instance) {
-        model.Opinion.create({UserId: req.currentUser.id, content: req.body.topic.content, TopicId: instance.id, root: true}).then(function(instance) {
+app.post('/topics', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
+    model.Topic.create({
+        UserId: req.currentUser.id,
+        theme: req.body.topic.theme,
+        closed: false
+    }).then(function (instance) {
+        model.Opinion.create({
+            UserId: req.currentUser.id,
+            content: req.body.topic.content,
+            TopicId: instance.id,
+            root: true
+        }).then(function (instance) {
             res.sendStatus(201);
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log(error);
             res.sendStatus(400);
         });
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.log(err);
         res.sendStatus(400);
     });
 });
-app.get('/topics', function(req, res) {
+app.get('/topics', function (req, res) {
     model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id AS \"user_id\", Users.avatar_url, Users.nickname FROM Topics INNER JOIN Users ON Users.id = Topics.UserId ORDER BY Topics.createdAt DESC", {
         type: model.sequelize.QueryTypes.SELECT
-    }).then(function(topics) {
+    }).then(function (topics) {
         res.json(topics);
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log(error);
         res.sendStatus(500);
     });
 });
-app.get('/topics/:id/opinions', function(req, res) {
+app.get('/topics/:id/opinions', function (req, res) {
 
     var json = {};
-    async.parallel([function(callback) {
+    async.parallel([function (callback) {
         model.Opinion.sequelize.query("SELECT Opinions.content, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
             type: model.sequelize.QueryTypes.SELECT,
             replacements: [req.params.id]
-        }).then(function(opinions) {
+        }).then(function (opinions) {
             json.opinions = opinions;
             callback();
-        }).catch(function(error) {
+        }).catch(function (error) {
             callback(error);
         });
-    }, function(callback) {
+    }, function (callback) {
         model.Opinion.sequelize.query("SELECT Topics.theme FROM Topics  WHERE Topics.id = ?;", {
             type: model.sequelize.QueryTypes.SELECT,
             replacements: [req.params.id]
-        }).then(function(topics) {
+        }).then(function (topics) {
             try {
                 json.theme = topics[0].theme;
                 callback();
@@ -98,16 +107,29 @@ app.get('/topics/:id/opinions', function(req, res) {
             } catch (e) {
                 callback(e);
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             callback(error);
         });
-    }], function(err, result) {
+    }], function (err, result) {
         if (err) {
             console.log(err);
             res.sendStatus(400);
         } else {
             res.json(json);
         }
+    });
+});
+app.post('/opinions', bodyParser.json(), currentUser, notLoggedIn, function (req, res, next) {
+    model.Opinion.create({
+        content: req.body.opinion.content,
+        UserId: req.currentUser.id,
+        TopicId: req.body.opinion.topic_id,
+        root: false
+    }).then(function (instance) {
+        res.sendStatus(201);
+    }).catch(function (error) {
+        console.log(error);
+        res.sendStatus(400);
     });
 });
 app.use(express.static('public'));
