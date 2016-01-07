@@ -30,6 +30,10 @@ app.get('/', function(req, res) {
     res.sendFile(util.format('%s/public/layout.html', __dirname));
 });
 
+app.get('/vk-url', function(req, res) {
+    res.json({url: vkauth.getUrl()});
+});
+
 app.use(express.static('public'));
 
 

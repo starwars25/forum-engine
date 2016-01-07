@@ -12,10 +12,18 @@ app.factory('$common', ['$cookies', function($cookies) {
     }
 }]);
 
-app.controller('HeaderCtrl', ['$scope', '$common', function($scope, $common) {
+app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function($scope, $common, $http, $window) {
     $scope.loggedIn = $common.loggedIn();
     $scope.logIn = function() {
-        alert('Log In');
+        $http({
+            method: 'GET',
+            url: '/vk-url'
+        }).then(function success(response) {
+            console.log(response.data.url);
+            $window.location.href = response.data.url;
+        }, function error(response) {
+            alert('Unknown error.')
+        });
     };
 }]);
 
