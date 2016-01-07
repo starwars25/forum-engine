@@ -106,6 +106,10 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     fetchUser();
 }]);
 
+app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+
+}]);
+
 app.directive('appHeader', function () {
     return {
         restrict: 'E',
@@ -118,6 +122,10 @@ app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: '/javascript/templates/index.html',
         controller: 'IndexCtrl'
+    });
+    $routeProvider.when('/topics/:id', {
+        templateUrl: '/javascript/templates/topic-detail.html',
+        controller: 'TopicDetailCtrl'
     });
     $routeProvider.when('/not-found', {
         templateUrl: '/javascript/templates/404.html'
