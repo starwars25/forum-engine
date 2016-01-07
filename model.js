@@ -71,11 +71,17 @@ var Topic = sequelize.define('Topic', {
     },
     theme: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [4, 140]
+        }
     },
     content: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2]
+        }
     },
     closed: {
         type: Sequelize.BOOLEAN,
@@ -93,7 +99,11 @@ var Opinion = sequelize.define('Opinion', {
     },
     content: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2]
+
+        }
     }
 });
 var Comment = sequelize.define('Comment', {

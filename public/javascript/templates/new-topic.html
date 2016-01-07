@@ -4,7 +4,7 @@
     <h1>{{topic.theme}}</h1>
     <p>{{topic.content}}</p>
 </div>
-<form name="createTopicForm">
+<form name="createTopicForm" ng-submit="createTopic()">
     <label>Theme</label>
     <br>
     <input type="text" ng-model="topic.theme">

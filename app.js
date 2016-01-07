@@ -50,6 +50,23 @@ app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function(re
         res.sendStatus(400);
     });
 });
+app.post('/topics', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
+    model.Topic.create({UserId: req.currentUser.id, theme: req.body.topic.theme, content: req.body.topic.content, closed: false}).then(function (instance) {
+        res.sendStatus(201);
+    }).catch(function(err) {
+        res.sendStatus(400);
+    });
+});
+app.get('/topics', function(req, res) {
+    model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id, Users.avatar_url, Users.nickname FROM Topics INNER JOIN Users ON Users.id = Topics.UserId ORDER BY Topics.createdAt DESC", {
+        type: model.sequelize.QueryTypes.SELECT
+    }).then(function(topics) {
+        res.json(topics);
+    }).catch(function(error) {
+        console.log(error);
+        res.sendStatus(500);
+    });
+});
 app.use(express.static('public'));
 var server = app.listen(3000, function () {
     console.log('Listening on %d', server.address().port);

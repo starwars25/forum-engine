@@ -1,2 +1,7 @@
 <h1>Content</h1>
 <a href="/#/new-topic" ng-show="loggedIn()">New Topic</a>
+<div ng-repeat="topic in topics">
+    <h1><a href="/#/topics/{{topic.id}}">{{topic.theme}}</a> </h1>
+    <h3>{{topic.nickname}}</h3>
+    <img ng-src="{{topic.avatar_url}}" />
+</div>

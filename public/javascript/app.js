@@ -1,7 +1,19 @@
 var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
 
-app.controller('IndexCtrl', ['$scope', '$common', function ($scope, $common) {
+app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
+    $scope.fetchTopics = function() {
+        $http({
+            method: 'GET',
+            url: '/topics'
+        }).then(function success(response) {
+            console.log(response.data);
+            $scope.topics = response.data;
+        }, function failure(response) {
+            alert('Error while fetching topics.');
+        });
+    };
+    $scope.fetchTopics();
 }]);
 
 app.factory('$common', ['$cookies', '$window', function($cookies, $window) {
@@ -39,6 +51,26 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function(
 
 app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function($scope, $common, $http) {
     $common.redirectIfNotLoggedIn();
+    $scope.createTopic = function() {
+        console.log('Create topic');
+        $http({
+            method: 'POST',
+            url: '/topics',
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: {
+                topic: {
+                    theme: $scope.topic.theme,
+                    content: $scope.topic.content
+                }
+            }
+        }).then(function success(response) {
+            alert('Success');
+        }, function failure(response) {
+            alert('Failure')
+        });
+    };
 }]);
 
 app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function($scope, $common, $window, $http) {
