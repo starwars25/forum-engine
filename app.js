@@ -82,16 +82,28 @@ app.get('/topics', function (req, res) {
 app.get('/topics/:id/opinions', currentUser, function (req, res) {
     var json = {};
     async.parallel([function (callback) {
-        model.Opinion.sequelize.query("SELECT Opinions.id, Opinions.content, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
+        model.Opinion.sequelize.query("SELECT Opinions.id, Opinions.content, Opinions.rating, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
             type: model.sequelize.QueryTypes.SELECT,
             replacements: [req.params.id]
         }).then(function (opinions) {
             json.opinions = opinions;
-            async.each(opinions, function(opinion, callback){
+            async.each(opinions, function (opinion, callback) {
                 model.sequelize.query("SELECT * FROM Upvotes WHERE OpinionId = ? AND UserId = ?;", {
-                    replacements: [req.params.id, req.currentUser]
+                    replacements: [req.params.id, req.currentUser],
+                    type: model.sequelize.QueryTypes.SELECT
+                }).then(function (data) {
+                    if (data.length > 0) {
+                        opinion.vote = {
+                            value: data[0].content
+                        }
+                    }
+                    callback();
+                }).catch(function (error) {
+                    console.log(error);
+                    res.sendStatus(500);
+                    callback(error);
                 })
-            }, function(err) {
+            }, function (err) {
                 if (err)
                     callback(err);
                 else
@@ -176,13 +188,22 @@ app.post('/upvotes', bodyParser.json(), currentUser, notLoggedIn, function (req,
                 res.sendStatus(400);
             } else {
                 var content = req.body.upvote.content;
-                if (content && (content === 1 || content === 0)) {
+                if (content && (content === 1 || content === -1)) {
                     model.Upvote.create({
                         UserId: req.currentUser.id,
                         OpinionId: req.body.upvote.opinion_id,
                         content: req.body.upvote.content
                     }).then(function (instance) {
-                        res.sendStatus(201);
+                        model.Opinion.findById(instance.OpinionId).then(function (instane) {
+                            instane.update({
+                                rating: instane.rating + content
+                            }).then(function (instance) {
+                                res.sendStatus(201);
+                            }).catch(function (error) {
+                                console.log(error);
+                                res.sendStatus(500);
+                            });
+                        });
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -206,9 +227,18 @@ app.put('/upvotes/:id', bodyParser.json(), currentUser, notLoggedIn, function (r
         }
     }).then(function (instance) {
         var content = req.body.upvote.content;
-        if (content && (content === 1 || content === 0)) {
+        if (content && (content === 1 || content === -1)) {
             instance.update({content: content}).then(function (instance) {
-                res.sendStatus(200);
+                model.Opinion.findById(instance.OpinionId).then(function (instane) {
+                    instane.update({
+                        rating: instane.rating + content
+                    }).then(function (instance) {
+                        res.sendStatus(201);
+                    }).catch(function (error) {
+                        console.log(error);
+                        res.sendStatus(500);
+                    });
+                });
             }).catch(function (error) {
                 console.log(error);
                 res.sendStatus(400);

@@ -101,6 +101,11 @@ var Opinion = sequelize.define('Opinion', {
     root: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    rating: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
 });
 var Comment = sequelize.define('Comment', {
