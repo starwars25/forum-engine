@@ -5,6 +5,16 @@
             <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
             <h4>{{opinion.nickname}}</h4>
             <p>{{opinion.content}}</p>
+            <button class="btn btn-danger" ng-click="showEditForm(opinion)" ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit</button>
+            <form name="opinion.editOpinion" ng-show="editedOpinionId === opinion.id" ng-submit="opinion.editOpinion.$valid && updateOpinion(opinion)">
+                <div class="form-group" ng-class="{'has-error': opinion.editOpinion.contentInput.$invalid}">
+                    <label>Content</label>
+                    <textarea ng-model="opinion.content" name="contentInput" class="form-control" required minlength="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit</button>
+                <button class="btn btn-default" ng-click="hideEditForm()">Hide</button>
+
+            </form>
         </div>
         <div class="clearfix"></div>
         <form ng-show="loggedIn()" name="createOpinionForm" ng-submit="createOpinionForm.$valid && createOpinion()">

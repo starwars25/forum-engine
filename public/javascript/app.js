@@ -106,7 +106,10 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     fetchUser();
 }]);
 
-app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function ($scope, $routeParams, $http) {
+app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', function ($scope, $routeParams, $http, $cookies) {
+    $scope.wrongUser = function(opinion) {
+        return opinion.vk_user_id != $cookies.get('user-id');
+    };
     $scope.fetchOpinions = function () {
         $http({
             method: 'GET',
@@ -116,6 +119,33 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function (
             $scope.topic = response.data;
         }, function error(response) {
             alert('Error while fetching topics.');
+        });
+    };
+    $scope.showEditForm = function(opinion) {
+        $scope.editedOpinionId = opinion.id;
+        console.log($scope.editedOpinionId);
+    };
+    $scope.hideEditForm = function() {
+        $scope.editedOpinionId = null;
+    };
+    $scope.updateOpinion = function(opinion) {
+        console.log('updating');
+        $http({
+            method: 'PUT',
+            url: '/opinions/' + opinion.id,
+            headers: {
+                'content-type': 'application/json'
+            },
+            data: {
+                opinion: {
+                    content: opinion.content
+                }
+            },
+            withCredentials: true
+        }).then(function success(res) {
+            $scope.hideEditForm();
+        }, function failure(res) {
+            console.log('Error while updating opinion.')
         });
     };
     $scope.fetchOpinions();

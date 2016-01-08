@@ -86,7 +86,7 @@ app.get('/topics/:id/opinions', function (req, res) {
 
     var json = {};
     async.parallel([function (callback) {
-        model.Opinion.sequelize.query("SELECT Opinions.content, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
+        model.Opinion.sequelize.query("SELECT Opinions.id, Opinions.content, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
             type: model.sequelize.QueryTypes.SELECT,
             replacements: [req.params.id]
         }).then(function (opinions) {
@@ -139,7 +139,7 @@ app.put('/opinions/:id', bodyParser.json(), currentUser, notLoggedIn, function(r
         }
     }).then(function(instance) {
         if (instance) {
-            if (instance.UserId === currentUser.id) {
+            if (instance.UserId === req.currentUser.id) {
                 instance.update({
                     content: req.body.opinion.content
                 }).then(function(instance) {
