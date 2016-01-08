@@ -4,6 +4,32 @@
     margin-right: 20px;
 }
 
+.upvote {
+    float: left;
+    position: relative;
+    height: 50px;
+    margin-right: 10px;
+    width: 25px;
+}
+
+
+
+.upvote-down {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+
+
+.upvote-number {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
 .avatar-small {
     float: left;
     width: 50px;
@@ -17,6 +43,7 @@
     padding: 10px;
     font-size: 90%;
 }
+
 h1 {
     margin-top: 0;
 }
@@ -39,7 +66,6 @@ textarea {
     margin-top: 10px;
     margin-bottom: 5px;
 }
-
 
 .topic-theme, .topic-author {
 }

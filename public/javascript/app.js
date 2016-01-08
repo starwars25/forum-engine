@@ -107,6 +107,13 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
 }]);
 
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', function ($scope, $routeParams, $http, $cookies) {
+    $scope.upvote = function(opinion) {
+        console.log('Upvote opinion %d', opinion.id);
+    };
+    $scope.devote = function(opinion) {
+        console.log('Devote opinion %d', opinion.id);
+
+    };
     $scope.wrongUser = function(opinion) {
         return opinion.vk_user_id != $cookies.get('user-id');
     };

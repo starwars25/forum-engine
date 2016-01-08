@@ -1,15 +1,29 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
         <h3>{{topic.theme}}</h3>
+
         <div ng-repeat="opinion in topic.opinions" class="opinion">
+            <div class="upvote">
+                <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)"></span>
+                <span class="upvote-number">10</span>
+                <span class="upvote-down">
+                                    <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)"></span>
+
+                </span>
+            </div>
             <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
             <h4>{{opinion.nickname}}</h4>
+
             <p>{{opinion.content}}</p>
-            <button class="btn btn-danger" ng-click="showEditForm(opinion)" ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit</button>
-            <form name="opinion.editOpinion" ng-show="editedOpinionId === opinion.id" ng-submit="opinion.editOpinion.$valid && updateOpinion(opinion)">
+            <button class="btn btn-danger" ng-click="showEditForm(opinion)"
+                    ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit
+            </button>
+            <form name="opinion.editOpinion" ng-show="editedOpinionId === opinion.id"
+                  ng-submit="opinion.editOpinion.$valid && updateOpinion(opinion)">
                 <div class="form-group" ng-class="{'has-error': opinion.editOpinion.contentInput.$invalid}">
                     <label>Content</label>
-                    <textarea ng-model="opinion.content" name="contentInput" class="form-control" required minlength="2"></textarea>
+                    <textarea ng-model="opinion.content" name="contentInput" class="form-control" required
+                              minlength="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Edit</button>
                 <button class="btn btn-default" ng-click="hideEditForm()">Hide</button>
