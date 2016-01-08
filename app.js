@@ -34,14 +34,11 @@ app.get('/current-user', currentUser, notLoggedIn, function (req, res) {
             nickname: req.currentUser.nickname,
             avatar_url: req.currentUser.avatar_url,
             topics: topics
-
         };
         res.json(json);
     }).catch(function (error) {
         res.sendStatus(500);
     });
-
-
 });
 app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
     req.currentUser.update({nickname: req.body.nickname}).then(function (instance) {
@@ -82,8 +79,7 @@ app.get('/topics', function (req, res) {
         res.sendStatus(500);
     });
 });
-app.get('/topics/:id/opinions', function (req, res) {
-
+app.get('/topics/:id/opinions', currentUser, function (req, res) {
     var json = {};
     async.parallel([function (callback) {
         model.Opinion.sequelize.query("SELECT Opinions.id, Opinions.content, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
@@ -91,6 +87,16 @@ app.get('/topics/:id/opinions', function (req, res) {
             replacements: [req.params.id]
         }).then(function (opinions) {
             json.opinions = opinions;
+            async.each(opinions, function(opinion, callback){
+                model.sequelize.query("SELECT * FROM Upvotes WHERE OpinionId = ? AND UserId = ?;", {
+                    replacements: [req.params.id, req.currentUser]
+                })
+            }, function(err) {
+                if (err)
+                    callback(err);
+                else
+                    callback();
+            });
             callback();
         }).catch(function (error) {
             callback(error);
@@ -103,7 +109,6 @@ app.get('/topics/:id/opinions', function (req, res) {
             try {
                 json.theme = topics[0].theme;
                 callback();
-
             } catch (e) {
                 callback(e);
             }
@@ -132,19 +137,19 @@ app.post('/opinions', bodyParser.json(), currentUser, notLoggedIn, function (req
         res.sendStatus(400);
     });
 });
-app.put('/opinions/:id', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
+app.put('/opinions/:id', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
     model.Opinion.findOne({
         where: {
             id: req.params.id
         }
-    }).then(function(instance) {
+    }).then(function (instance) {
         if (instance) {
             if (instance.UserId === req.currentUser.id) {
                 instance.update({
                     content: req.body.opinion.content
-                }).then(function(instance) {
+                }).then(function (instance) {
                     res.sendStatus(201);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.log(error);
                     res.sendStatus(400);
                 });
@@ -154,9 +159,66 @@ app.put('/opinions/:id', bodyParser.json(), currentUser, notLoggedIn, function(r
         } else {
             res.sendStatus(404);
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log(error);
         res.sendStatus(500);
+    });
+});
+app.post('/upvotes', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
+    if (req.body.upvote.opinion_id) {
+        model.Upvote.findAll({
+            where: {
+                UserId: req.currentUser.id,
+                OpinionId: req.body.upvote.opinion_id
+            }
+        }).then(function (upvotes) {
+            if (upvotes.length > 0) {
+                res.sendStatus(400);
+            } else {
+                var content = req.body.upvote.content;
+                if (content && (content === 1 || content === 0)) {
+                    model.Upvote.create({
+                        UserId: req.currentUser.id,
+                        OpinionId: req.body.upvote.opinion_id,
+                        content: req.body.upvote.content
+                    }).then(function (instance) {
+                        res.sendStatus(201);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else {
+                    res.sendStatus(400);
+                }
+            }
+        }).catch(function (error) {
+            console.log(error);
+            res.sendStatus(500);
+        });
+    } else {
+        res.sendStatus(400);
+    }
+});
+app.put('/upvotes/:id', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
+    model.Upvote.findOne({
+        where: {
+            UserId: req.currentUser.id,
+            OpinionId: req.params.id
+        }
+    }).then(function (instance) {
+        var content = req.body.upvote.content;
+        if (content && (content === 1 || content === 0)) {
+            instance.update({content: content}).then(function (instance) {
+                res.sendStatus(200);
+            }).catch(function (error) {
+                console.log(error);
+                res.sendStatus(400);
+            });
+        } else {
+            res.sendStatus(400);
+        }
+    }).catch(function (error) {
+        console.log(error);
+        res.sendStatus(400);
     });
 });
 app.use(express.static('public'));
