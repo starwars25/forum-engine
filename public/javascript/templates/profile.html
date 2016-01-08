@@ -1,9 +1,8 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-4 col-lg-6 col-lg-offset-3">
-        <h1>Profile</h1>
 
-        <h2>Hello, {{user.name}}</h2>
-        <img ng-src="{{user.avatar_url}}" class="img-responsive img-rounded img-thumbnail"/>
+        <h3>Hello, {{user.name}}</h3>
+        <img ng-src="{{user.avatar_url}}" class="img-responsive img-rounded img-thumbnail profile-avatar"/>
         <div class="clearfix"></div>
         <form name="changeNicknameForm" ng-submit="changeNicknameForm.$valid && changeNickname()">
             <div class="form-group" ng-class="{'has-error': changeNicknameForm.nickname.$invalid && changeNicknameForm.nickname.$dirty}">

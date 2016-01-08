@@ -1,14 +1,18 @@
-<h1>{{topic.theme}}</h1>
-<div ng-repeat="opinion in topic.opinions">
-    <h3>{{opinion.nickname}}</h3>
-    <img ng-src="{{opinion.avatar_url}}" />
-    <p>{{opinion.content}}</p>
-
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+        <h3>{{topic.theme}}</h3>
+        <div ng-repeat="opinion in topic.opinions" class="opinion">
+            <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
+            <h4>{{opinion.nickname}}</h4>
+            <p>{{opinion.content}}</p>
+        </div>
+        <div class="clearfix"></div>
+        <form ng-show="loggedIn()" name="createOpinionForm" ng-submit="createOpinionForm.$valid && createOpinion()">
+            <div class="form-group">
+                <label>Content</label>
+                <textarea ng-model="newOpinion.content" minlength="2" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>
-<form ng-show="loggedIn()" name="createOpinionForm" ng-submit="createOpinionForm.$valid && createOpinion()">
-    <label>Content</label>
-    <br>
-    <textarea ng-model="newOpinion.content" minlength="2"></textarea>
-    <br>
-    <button type="submit">Submit</button>
-</form>

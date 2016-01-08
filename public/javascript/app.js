@@ -137,6 +137,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', function (
             }
         }).then(function success(res) {
             $scope.fetchOpinions();
+            $scope.createOpinionForm.$setPristine();
         }, function failure(res) {
             alert('Error while posting opinion.');
         });

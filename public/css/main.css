@@ -4,6 +4,12 @@
     margin-right: 20px;
 }
 
+.avatar-small {
+    float: left;
+    width: 50px;
+    margin-right: 10px;
+}
+
 .preview {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -11,9 +17,12 @@
     padding: 10px;
     font-size: 90%;
 }
-
 h1 {
     margin-top: 0;
+}
+
+.profile-avatar {
+    margin-bottom: 15px;
 }
 
 h3 {
@@ -24,12 +33,13 @@ textarea {
     resize: vertical;
 }
 
-.topic {
+.topic, .opinion {
     border-bottom: 1px solid #e5e5e5;
     padding-bottom: 5px;
     margin-top: 10px;
     margin-bottom: 5px;
 }
+
 
 .topic-theme, .topic-author {
 }
