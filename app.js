@@ -132,6 +132,33 @@ app.post('/opinions', bodyParser.json(), currentUser, notLoggedIn, function (req
         res.sendStatus(400);
     });
 });
+app.put('/opinions/:id', bodyParser.json(), currentUser, notLoggedIn, function(req, res) {
+    model.Opinion.findOne({
+        where: {
+            id: req.params.id
+        }
+    }).then(function(instance) {
+        if (instance) {
+            if (instance.UserId === currentUser.id) {
+                instance.update({
+                    content: req.body.opinion.content
+                }).then(function(instance) {
+                    res.sendStatus(201);
+                }).catch(function(error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                });
+            } else {
+                res.sendStatus(403);
+            }
+        } else {
+            res.sendStatus(404);
+        }
+    }).catch(function(error) {
+        console.log(error);
+        res.sendStatus(500);
+    });
+});
 app.use(express.static('public'));
 var server = app.listen(3000, function () {
     console.log('Listening on %d', server.address().port);
