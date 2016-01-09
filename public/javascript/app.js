@@ -120,10 +120,10 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
     $scope.fetchOpinions = function () {
         $http({
             method: 'GET',
-            url: '/topics/' + $routeParams.id + '/opinions'
+            url: '/topics/' + $routeParams.id
         }).then(function success(response) {
             console.log(response.data);
-            $scope.topic = response.data;
+            //$scope.topic = response.data;
         }, function error(response) {
             alert('Error while fetching topics.');
         });

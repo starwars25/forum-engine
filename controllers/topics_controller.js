@@ -38,6 +38,29 @@ module.exports = function (app) {
             res.sendStatus(500);
         });
     });
-    app.get('/topics/:id/opinions', currentUser, function (req, res) {
+    app.get('/topics/:id/', currentUser, function (req, res) {
+        var json = {};
+        async.parallel([function(callback) {
+            model.sequelize.query("SELECT Topics.theme FROM Topics WHERE Topics.id = ?;", {
+                replacements: [req.params.id],
+                type: model.sequelize.QueryTypes.SELECT
+            }).then(function(themes) {
+                json.theme = themes[0].theme;
+                callback();
+            }).catch(function(error) {
+                console.log(error);
+                callback(error);
+            });
+        }, function(callback) {
+            model.sequelize.query("SELECT Opinions.content, Opinions.id, Users.vk_user_id AS \"user_id\", ")
+            callback();
+        }], function(error, result) {
+            if (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } else {
+                res.json(json);
+            }
+        });
     });
 };
