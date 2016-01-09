@@ -24,6 +24,7 @@ app.factory('$common', ['$cookies', '$window', function ($cookies, $window) {
         logOut: function () {
             $cookies.remove('user-id');
             $cookies.remove('token');
+            $window.location.href = '/';
         },
         redirectIfNotLoggedIn: function () {
             if (!this.loggedIn()) {
