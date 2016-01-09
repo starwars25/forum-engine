@@ -21,6 +21,10 @@ require('./controllers/topics_controller')(app);
 require('./controllers/opinions_controller')(app);
 require('./controllers/upvotes_controller')(app);
 app.use(express.static('public'));
-var server = app.listen(3000, function () {
+var port = 3000;
+if (process.argv[3]) {
+    port = Number(process.argv[3]);
+}
+var server = app.listen(port, function () {
     console.log('Listening on %d', server.address().port);
 });
