@@ -52,8 +52,16 @@ module.exports = function (app) {
                 callback(error);
             });
         }, function(callback) {
-            model.sequelize.query("SELECT Opinions.content, Opinions.id, Users.vk_user_id AS \"user_id\", ")
-            callback();
+            model.sequelize.query("SELECT Opinions.id, Opinions.content, Opinions.rating, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
+                replacements: [req.params.id],
+                type: model.sequelize.QueryTypes.SELECT
+            }).then(function(opinions) {
+                json.opinions = opinions;
+                callback();
+            }).catch(function(error) {
+                console.log(error);
+                callback(error);
+            });
         }], function(error, result) {
             if (error) {
                 console.log(error);
