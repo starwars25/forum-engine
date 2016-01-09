@@ -19,6 +19,7 @@ require('./controllers/authentication_controller')(app);
 require('./controllers/users_controller')(app);
 require('./controllers/topics_controller')(app);
 require('./controllers/opinions_controller')(app);
+require('./controllers/upvotes_controller')(app);
 app.use(express.static('public'));
 var server = app.listen(3000, function () {
     console.log('Listening on %d', server.address().port);
