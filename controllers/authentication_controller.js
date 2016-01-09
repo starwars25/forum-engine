@@ -12,7 +12,7 @@ module.exports = function(app) {
         'appSecret': process.env.VK_APP_SECRET,
         'language': 'ru'
     });
-    var model = require('./model');
+    var model = require('../model');
     var sendAuthCredentials = function(res, token) {
         var expires = new Date();
         expires.setSeconds(expires.getSeconds() + token.expires_in);

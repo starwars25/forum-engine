@@ -1,11 +1,12 @@
-module.exports = function (app) {
+module.exports = function () {
     var noUser = function(req, next) {
         req.currentUser = null;
         next();
     };
-    var model = require('./model');
+
+    var model = require('../model');
     var bcrypt = require('bcrypt');
-    var currentUser = function (req, res, next) {
+    return function (req, res, next) {
         if (req.cookies['user-id'] && req.cookies['token']) {
             model.User.findOne({where: {vk_user_id: Number(req.cookies['user-id'])}}).then(function (instance) {
                 if (instance) {
@@ -31,5 +32,4 @@ module.exports = function (app) {
             noUser(req, next);
         }
     };
-    return currentUser;
 };
