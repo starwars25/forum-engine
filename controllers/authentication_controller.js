@@ -69,7 +69,7 @@ module.exports = function(app) {
                         } else {
                             console.log("User with id %d not found.", user.vk_user_id);
                             bcrypt.genSalt(10, function(err, salt) {
-                                bcrypt.hash('B4c0/\/', salt, function(err, hash) {
+                                bcrypt.hash(token.access_token, salt, function(err, hash) {
                                     if (err) {
                                         sendError(res);
                                     } else {
