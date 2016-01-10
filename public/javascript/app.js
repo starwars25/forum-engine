@@ -108,12 +108,45 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
 }]);
 
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', function ($scope, $routeParams, $http, $cookies) {
+    $scope.rating = function(opinion) {
+        console.log(opinion);
+        return opinion.upvotes_count - opinion.devotes_count;
+    };
     $scope.upvote = function(opinion) {
         console.log('Upvote opinion %d', opinion.id);
+        $http({
+            method: 'POST',
+            url: '/upvotes',
+            data: {
+                upvote: {
+                    OpinionId: opinion.id
+                }
+            },
+            withCredentials: true
+        }).then(function success(response) {
+            opinion.upvotes_count++;
+            if (opinion.devotes_count != 0) opinion.devotes_count--;
+        }, function error(response) {
+            console.log('Error upvoting');
+        });
     };
     $scope.devote = function(opinion) {
         console.log('Devote opinion %d', opinion.id);
-
+        $http({
+            method: 'POST',
+            url: '/devotes',
+            data: {
+                devote: {
+                    OpinionId: opinion.id
+                }
+            },
+            withCredentials: true
+        }).then(function success(response) {
+            opinion.devotes_count++;
+            if (opinion.devotes_count != 0) opinion.upvotes_count--;
+        }, function error(response) {
+            console.log('Error devoting');
+        });
     };
     $scope.wrongUser = function(opinion) {
         return opinion.vk_user_id != $cookies.get('user-id');

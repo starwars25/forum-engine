@@ -45,6 +45,7 @@ module.exports = function (app) {
                 replacements: [req.params.id],
                 type: model.sequelize.QueryTypes.SELECT
             }).then(function(themes) {
+                console.log(themes);
                 json.theme = themes[0].theme;
                 callback();
             }).catch(function(error) {

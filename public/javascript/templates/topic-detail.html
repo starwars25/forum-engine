@@ -5,7 +5,7 @@
         <div ng-repeat="opinion in topic.opinions" class="opinion">
             <div class="upvote">
                 <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)"></span>
-                <span class="upvote-number">10</span>
+                <span class="upvote-number">{{rating(opinion)}}</span>
                 <span class="upvote-down">
                                     <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)"></span>
 
