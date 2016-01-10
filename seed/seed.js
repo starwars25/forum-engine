@@ -3,7 +3,11 @@
 var model = require('../model');
 var bcrypt = require('bcrypt');
 var async = require('async');
-
+var instances = {
+    users: [],
+    topics: [],
+    opinions: []
+};
 module.exports = function(token, callback) {
     var token_digest = null;
     async.series([
@@ -44,17 +48,20 @@ module.exports = function(token, callback) {
                 token_digest: token_digest
 
             }).then(function(user) {
+                instances.users.push(user);
                 model.Topic.create({
                     theme: 'TestTheme',
                     closed: false,
                     UserId: user.id
                 }).then(function(topic) {
+                    instances.topics.push(topic);
                     model.Opinion.create({
                         content: 'TestContent',
                         root: false,
                         TopicId: topic.id,
                         UserId: user.id
                     }).then(function(opinion) {
+                        instances.opinions.push(opinion);
                         callback();
                     }).catch(function(error) {
                         console.log(error);
@@ -77,7 +84,7 @@ module.exports = function(token, callback) {
             callback(err);
         } else {
             console.log('Seed finished.');
-            callback();
+            callback(null, instances);
         }
     });
 };

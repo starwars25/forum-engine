@@ -119,11 +119,16 @@ var Upvote = sequelize.define('Upvote', {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    value: {
-        type: Sequelize.INTEGER,
-        allowNull: false
     }
+
+});
+var Devote = sequelize.define('Devote', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    }
+
 });
 User.hasMany(Topic);
 Topic.belongsTo(User);
@@ -133,12 +138,16 @@ User.hasMany(Comment);
 Comment.belongsTo(User);
 User.hasMany(Upvote);
 Upvote.belongsTo(User);
+User.hasMany(Devote);
+Devote.belongsTo(User);
 Topic.hasMany(Opinion);
 Opinion.belongsTo(Topic);
 Opinion.hasMany(Comment);
 Comment.belongsTo(Opinion);
 Opinion.hasMany(Upvote);
 Upvote.belongsTo(Opinion);
+Opinion.hasMany(Devote);
+Devote.belongsTo(Opinion);
 
 module.exports = {
     User: User,
@@ -146,5 +155,6 @@ module.exports = {
     Opinion: Opinion,
     Comment: Comment,
     Upvote: Upvote,
+    Devote: Devote,
     sequelize: sequelize
 };
