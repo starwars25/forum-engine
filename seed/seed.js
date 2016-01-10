@@ -1,12 +1,13 @@
 // Should be called only from tests!
-
 var model = require('../model');
 var bcrypt = require('bcrypt');
 var async = require('async');
 var instances = {
     users: [],
     topics: [],
-    opinions: []
+    opinions: [],
+    upvotes: [],
+    devotes: []
 };
 module.exports = function(token, callback) {
     var token_digest = null;
@@ -39,43 +40,66 @@ module.exports = function(token, callback) {
         },
         function(callback) {
             // Seed table
-            model.User.create({
-                name: 'TestUser',
-                vk_user_id: 1,
-                nickname: 'TestUser',
-                banned: false,
-                admin: false,
-                token_digest: token_digest
-
-            }).then(function(user) {
-                instances.users.push(user);
-                model.Topic.create({
-                    theme: 'TestTheme',
-                    closed: false,
-                    UserId: user.id
-                }).then(function(topic) {
-                    instances.topics.push(topic);
+            async.series([
+                function(callback) {
+                    // create users
+                    model.User.create({
+                        name: 'TestUser',
+                        vk_user_id: 1,
+                        nickname: 'TestUser',
+                        banned: false,
+                        admin: false,
+                        token_digest: token_digest
+                    }).then(function(instance) {
+                        instances.users.push(instance);
+                        callback();
+                    }).catch(function(error) {
+                        callback(error);
+                    })
+                },
+                function(callback) {
+                    // create topics
+                    model.Topic.create({
+                        theme: 'TestTheme',
+                        closed: false,
+                        UserId: instances.users[0].id
+                    }).then(function(instance) {
+                        instances.topics.push(instance);
+                        callback();
+                    }).catch(function(error) {
+                        callback(error);
+                    })
+                },
+                function(callback) {
+                    // create opinions
                     model.Opinion.create({
                         content: 'TestContent',
                         root: false,
-                        TopicId: topic.id,
-                        UserId: user.id
+                        TopicId: instances.topics[0].id,
+                        UserId: instances.users[0].id
                     }).then(function(opinion) {
                         instances.opinions.push(opinion);
                         callback();
                     }).catch(function(error) {
-                        console.log(error);
                         callback(error);
                     });
-                }).catch(function(error) {
-                    console.log(error);
-                    callback(error);
-                });
-            }).catch(function(error) {
-                console.log(error);
-                callback(error);
+                },
+                function(callback) {
+                    // create upvotes/devotes
+                    model.Devote.create({
+                        UserId: instances.users[0].id,
+                        OpinionId: instances.opinions[0].id
+                    }).then(function (instance) {
+                        instances.devotes.push(instance);
+                        callback();
+                    }).catch(function(error) {
+                        callback(error);
+                    });
+                }
+            ], function(error, results) {
+                if (error) callback(error);
+                else callback();
             });
-
         }
     ], function(err, results) {
         // Finish

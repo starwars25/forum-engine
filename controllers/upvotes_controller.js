@@ -24,7 +24,7 @@ module.exports = function(app) {
                         }
                     }).then(function(instance) {
                         if (instance) {
-                            instance.destroy().then(function(res) {
+                            instance.destroy().then(function(result) {
                                 res.sendStatus(201);
                             }).catch(function(error) {
                                 console.log(error);
