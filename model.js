@@ -1,3 +1,4 @@
+console.log('\n\n\n\n\n\nLOADING MODEL\n\n\n\n\n')
 var Sequelize = require('sequelize');
 console.log(process.env.NODE_ENVIRONMENT);
 var path = __dirname + '/db/';

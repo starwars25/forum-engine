@@ -52,7 +52,7 @@ module.exports = function (app) {
                 callback(error);
             });
         }, function(callback) {
-            model.sequelize.query("SELECT Opinions.id, Opinions.content, Opinions.rating, Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId WHERE Opinions.TopicId = ?;", {
+            model.sequelize.query("SELECT Opinions.id, Opinions.content, COUNT(Upvotes.id) AS \"upvotes_count\", COUNT(Devotes.id) AS \"devotes_count\", Users.vk_user_id, Users.nickname, Users.avatar_url FROM Opinions INNER JOIN Users ON Users.id = Opinions.UserId LEFT JOIN Upvotes ON Upvotes.OpinionId = Opinions.id LEFT JOIN Devotes ON Devotes.OpinionId = Opinions.id WHERE Opinions.TopicId = ?  GROUP BY Opinions.id, Opinions.content, Users.vk_user_id, Users.nickname, Users.avatar_url; ", {
                 replacements: [req.params.id],
                 type: model.sequelize.QueryTypes.SELECT
             }).then(function(opinions) {

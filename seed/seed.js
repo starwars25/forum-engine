@@ -2,19 +2,20 @@
 var model = require('../model');
 var bcrypt = require('bcrypt');
 var async = require('async');
-var instances = {
-    users: [],
-    topics: [],
-    opinions: [],
-    upvotes: [],
-    devotes: []
-};
 module.exports = function(token, callback) {
+    var instances = {
+        users: [],
+        topics: [],
+        opinions: [],
+        upvotes: [],
+        devotes: []
+    };
+
     var token_digest = null;
     async.series([
         function(callback) {
             // Truncate all tables
-            var models = [model.User, model.Topic, model.Opinion, model.Comment, model.Upvote];
+            var models = [model.User, model.Topic, model.Opinion, model.Comment, model.Upvote, model.Devote];
             async.eachSeries(models, function(item, callback) {
                 item.truncate().then(function() {
                     callback();
