@@ -62,7 +62,43 @@ module.exports = function (app) {
                 console.log(error);
                 callback(error);
             });
-        }], function(error, result) {
+        }, function(callback) {
+            if (req.currentUser) {
+                var votes = {};
+                async.parallel([
+                    function(callback) {
+                        model.sequelize.query("SELECT id, OpinionId FROM Upvotes WHERE OpinionId = ? AND UserId = ?;", {
+                            replacements: [req.params.id, req.currentUser.id],
+                            type: model.sequelize.QueryTypes.SELECT
+                        }).then(function(data) {
+                            votes.upvotes = data;
+                            callback();
+                        }).catch(function(error) {
+                            console.log(error);
+                            callback(error);
+                        });
+                    },
+                    function(callback) {
+                        model.sequelize.query("SELECT id, OpinionId FROM Devotes WHERE OpinionId = ? AND UserId = ?;", {
+                            replacements: [req.params.id, req.currentUser.id],
+                            type: model.sequelize.QueryTypes.SELECT
+                        }).then(function(data) {
+                            votes.devotes = data;
+                            callback();
+                        }).catch(function(error) {
+                            console.log(error);
+                            callback(error);
+                        });
+                    }
+                ], function(err, result) {
+                    json.votes = votes;
+                    callback();
+                });
+            } else {
+                callback();
+            }
+        }
+        ], function(error, result) {
             if (error) {
                 console.log(error);
                 res.sendStatus(500);

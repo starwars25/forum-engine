@@ -17,12 +17,17 @@ describe('users_controller', function() {
         request({
             method: 'GET',
             path: '/topics/' + instances.topics[0].id,
-            data: ''
+            data: '',
+            cookies: {
+                'user-id': 1,
+                'token': 'token'
+            }
         }, function(err, res) {
             console.log(res.data);
             var json = JSON.parse(res.data);
             json.opinions[0].upvotes_count.should.eql(0);
             json.opinions[0].devotes_count.should.eql(1);
+            json.votes.devotes[0].id.should.eql(instances.devotes[0].id);
             done();
         });
     });
