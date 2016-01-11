@@ -102,7 +102,7 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     };
     fetchUser();
 }]);
-app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', function ($scope, $routeParams, $http, $cookies) {
+app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', '$common', function ($scope, $routeParams, $http, $cookies, $common) {
     $scope.rating = function(opinion) {
         return opinion.upvotes_count - opinion.devotes_count;
     };
@@ -153,6 +153,25 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
     $scope.wrongUser = function(opinion) {
         return opinion.vk_user_id != $cookies.get('user-id');
     };
+    $scope.comment = function(opinion) {
+        $http({
+            method: 'POST',
+            url: '/comments',
+            data: {
+                comment: {
+                    OpinionId: opinion.id,
+                    content: opinion.comment
+                }
+            },
+            withCredentials: true
+        }).then(function success(res) {
+            console.log(res.data);
+            if (!opinion.comments) opinion.comments = [];
+            opinion.comments.push(res.data);
+        }, function failure(res) {
+            alert('error');
+        });
+    };
     $scope.fetchOpinions = function () {
         $http({
             method: 'GET',
@@ -168,6 +187,12 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
     $scope.showEditForm = function(opinion) {
         $scope.editedOpinionId = opinion.id;
         console.log($scope.editedOpinionId);
+    };
+    $scope.showCommentForm = function(opinion) {
+        $scope.commentedOpinionId = opinion.id;
+    };
+    $scope.hideCommentForm = function() {
+        $scope.commentedOpinionId = null
     };
     $scope.hideEditForm = function() {
         $scope.editedOpinionId = null;
@@ -215,6 +240,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         });
     };
     $scope.analyzeUpvotes = function() {
+        if (!$common.loggedIn()) return;
         for(var i = 0; i < $scope.topic.opinions.length; i++) {
             var opinion = $scope.topic.opinions[i];
             if ($scope.topic.votes.upvotes[opinion.id]) {

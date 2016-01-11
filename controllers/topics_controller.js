@@ -58,7 +58,7 @@ module.exports = function (app) {
                 type: model.sequelize.QueryTypes.SELECT
             }).then(function (opinions) {
                 json.opinions = opinions;
-                model.sequelize.query("SELECT Comments.id, Comments.UserId, Comments.OpinionId, Comments.Content FROM Comments WHERE Comments.OpinionId IN (SELECT Opinions.id FROM Opinions WHERE Opinions.TopicId = ?);", {
+                model.sequelize.query("SELECT Comments.id, Comments.UserId, Comments.OpinionId, Comments.Content, Users.nickname AS \"author\", Users.avatar_url FROM Comments INNER JOIN Users ON Users.id = Comments.UserId WHERE Comments.OpinionId IN (SELECT Opinions.id FROM Opinions WHERE Opinions.TopicId = ?);", {
                     type: model.sequelize.QueryTypes.SELECT,
                     replacements: [req.params.id]
                 }).then(function(data) {

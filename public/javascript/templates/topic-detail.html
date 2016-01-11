@@ -15,9 +15,19 @@
             <h4>{{opinion.nickname}}</h4>
 
             <p>{{opinion.content}}</p>
+            <button class="btn btn-primary" ng-show="loggedIn()" ng-click="showCommentForm(opinion)" ng-hide="commentedOpinionId === opinion.id">Comment</button>
             <button class="btn btn-danger" ng-click="showEditForm(opinion)"
                     ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit
             </button>
+            <form name="opinion.commentOpinion" ng-show="commentedOpinionId === opinion.id" ng-submit="opinion.commentOpinion.$valid && comment(opinion)">
+                <div class="form-group" ng-class="{'has-error': opinion.commentOpinion.commentInput.$invalid}">
+                    <label>Comment</label>
+                    <textarea ng-model="opinion.comment" name="commentInput" class="form-control" required minlength="2"></textarea>
+
+                </div>
+                <button type="submit" class="btn btn-primary">Comment</button>
+                <button class="btn btn-default" ng-click="hideCommentForm()">Hide</button>
+            </form>
             <form name="opinion.editOpinion" ng-show="editedOpinionId === opinion.id"
                   ng-submit="opinion.editOpinion.$valid && updateOpinion(opinion)">
                 <div class="form-group" ng-class="{'has-error': opinion.editOpinion.contentInput.$invalid}">
