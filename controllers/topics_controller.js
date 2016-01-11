@@ -65,14 +65,20 @@ module.exports = function (app) {
             });
         }, function(callback) {
             if (req.currentUser) {
-                var votes = {};
+                var votes = {
+                    upvotes: {},
+                    devotes: {}
+                };
                 async.parallel([
                     function(callback) {
-                        model.sequelize.query("SELECT id, OpinionId FROM Upvotes WHERE OpinionId = ? AND UserId = ?;", {
+                        model.sequelize.query("SELECT Upvotes.id, Upvotes.OpinionId FROM Topics INNER JOIN Opinions ON Topics.id = Opinions.TopicId INNER JOIN Upvotes ON Upvotes.OpinionId = Opinions.id WHERE Topics.id = ? AND Upvotes.UserId = ?;", {
                             replacements: [req.params.id, req.currentUser.id],
                             type: model.sequelize.QueryTypes.SELECT
                         }).then(function(data) {
-                            votes.upvotes = data;
+                            for(var i = 0; i < data.length; i++) {
+                                var upvote = data[i];
+                                votes.upvotes[upvote.OpinionId] = upvote.id;
+                            }
                             callback();
                         }).catch(function(error) {
                             console.log(error);
@@ -80,11 +86,16 @@ module.exports = function (app) {
                         });
                     },
                     function(callback) {
-                        model.sequelize.query("SELECT id, OpinionId FROM Devotes WHERE OpinionId = ? AND UserId = ?;", {
+                        model.sequelize.query("SELECT Devotes.id, Devotes.OpinionId FROM Topics INNER JOIN Opinions ON Topics.id = Opinions.TopicId INNER JOIN Devotes ON Devotes.OpinionId = Opinions.id WHERE Topics.id = ? AND Devotes.UserId = ?;", {
                             replacements: [req.params.id, req.currentUser.id],
                             type: model.sequelize.QueryTypes.SELECT
                         }).then(function(data) {
-                            votes.devotes = data;
+                            console.log(data);
+                            for(var i = 0; i < data.length; i++) {
+                                var devote = data[i];
+                                votes.devotes[devote.OpinionId] = devote.id;
+                            }
+                            console.log(votes.devotes);
                             callback();
                         }).catch(function(error) {
                             console.log(error);

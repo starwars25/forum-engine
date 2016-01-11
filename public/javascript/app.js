@@ -1,5 +1,4 @@
 var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
-
 app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
     $scope.fetchTopics = function () {
@@ -15,7 +14,6 @@ app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $co
     };
     $scope.fetchTopics();
 }]);
-
 app.factory('$common', ['$cookies', '$window', function ($cookies, $window) {
     return {
         loggedIn: function () {
@@ -33,7 +31,6 @@ app.factory('$common', ['$cookies', '$window', function ($cookies, $window) {
         }
     }
 }]);
-
 app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function ($scope, $common, $http, $window) {
     $scope.loggedIn = $common.loggedIn;
     $scope.logIn = function () {
@@ -49,7 +46,6 @@ app.controller('HeaderCtrl', ['$scope', '$common', '$http', '$window', function 
     };
     $scope.logOut = $common.logOut;
 }]);
-
 app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $common.redirectIfNotLoggedIn();
     $scope.createTopic = function () {
@@ -73,7 +69,6 @@ app.controller('NewTopicCtrl', ['$scope', '$common', '$http', function ($scope, 
         });
     };
 }]);
-
 app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function ($scope, $common, $window, $http) {
     $common.redirectIfNotLoggedIn();
     var fetchUser = function () {
@@ -106,14 +101,11 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     };
     fetchUser();
 }]);
-
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', function ($scope, $routeParams, $http, $cookies) {
     $scope.rating = function(opinion) {
-        console.log(opinion);
         return opinion.upvotes_count - opinion.devotes_count;
     };
     $scope.upvote = function(opinion) {
-        console.log('Upvote opinion %d', opinion.id);
         $http({
             method: 'POST',
             url: '/upvotes',
@@ -126,12 +118,16 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         }).then(function success(response) {
             opinion.upvotes_count++;
             if (opinion.devotes_count != 0) opinion.devotes_count--;
+            if ($scope.topic.votes.devotes[opinion.id]) {
+                $scope.topic.votes.devotes[opinion.id] = null;
+            }
+            $scope.topic.votes.upvotes[opinion.id] = 1;
+            $scope.analyzeUpvotes();
         }, function error(response) {
-            console.log('Error upvoting');
+            alert('Error occurred.');
         });
     };
     $scope.devote = function(opinion) {
-        console.log('Devote opinion %d', opinion.id);
         $http({
             method: 'POST',
             url: '/devotes',
@@ -144,8 +140,13 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         }).then(function success(response) {
             opinion.devotes_count++;
             if (opinion.devotes_count != 0) opinion.upvotes_count--;
+            if ($scope.topic.votes.upvotes[opinion.id]) {
+                $scope.topic.votes.upvotes[opinion.id] = null;
+            }
+            $scope.topic.votes.devotes[opinion.id] = 1;
+            $scope.analyzeUpvotes();
         }, function error(response) {
-            console.log('Error devoting');
+            alert('Error occurred.');
         });
     };
     $scope.wrongUser = function(opinion) {
@@ -158,8 +159,9 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         }).then(function success(response) {
             console.log(response.data);
             $scope.topic = response.data;
+            $scope.analyzeUpvotes();
         }, function error(response) {
-            alert('Error while fetching topics.');
+            alert('Error occurred while fetching topics.');
         });
     };
     $scope.showEditForm = function(opinion) {
@@ -170,7 +172,6 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         $scope.editedOpinionId = null;
     };
     $scope.updateOpinion = function(opinion) {
-        console.log('updating');
         $http({
             method: 'PUT',
             url: '/opinions/' + opinion.id,
@@ -186,7 +187,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
         }).then(function success(res) {
             $scope.hideEditForm();
         }, function failure(res) {
-            console.log('Error while updating opinion.')
+            console.log('Error occurred while updating opinion.')
         });
     };
     $scope.fetchOpinions();
@@ -201,7 +202,6 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
                     topic_id: $routeParams.id,
                     content: $scope.newOpinion.content
                 }
-
             },
             headers: {
                 'content-type': 'application/json'
@@ -210,11 +210,20 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
             $scope.fetchOpinions();
             $scope.createOpinionForm.$setPristine();
         }, function failure(res) {
-            alert('Error while posting opinion.');
+            alert('Error occurred while posting opinion.');
         });
     };
+    $scope.analyzeUpvotes = function() {
+        for(var i = 0; i < $scope.topic.opinions.length; i++) {
+            var opinion = $scope.topic.opinions[i];
+            if ($scope.topic.votes.upvotes[opinion.id]) {
+                opinion.vote = 'upvote';
+            } else if ($scope.topic.votes.devotes[opinion.id]) {
+                opinion.vote = 'devote';
+            }
+        }
+    };
 }]);
-
 app.directive('appHeader', function () {
     return {
         restrict: 'E',
@@ -222,7 +231,6 @@ app.directive('appHeader', function () {
         controller: 'HeaderCtrl'
     }
 });
-
 app.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: '/javascript/templates/index.html',

@@ -4,10 +4,10 @@
 
         <div ng-repeat="opinion in topic.opinions" class="opinion">
             <div class="upvote">
-                <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)"></span>
+                <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)" ng-class="{'selected-upvote': opinion.vote == 'upvote'}"></span>
                 <span class="upvote-number">{{rating(opinion)}}</span>
                 <span class="upvote-down">
-                                    <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)"></span>
+                    <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)" ng-class="{'selected-upvote': opinion.vote == 'devote'}"></span>
 
                 </span>
             </div>

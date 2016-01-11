@@ -27,7 +27,7 @@ describe('users_controller', function() {
             var json = JSON.parse(res.data);
             json.opinions[0].upvotes_count.should.eql(0);
             json.opinions[0].devotes_count.should.eql(1);
-            json.votes.devotes[0].id.should.eql(instances.devotes[0].id);
+            json.votes.devotes[instances.opinions[0].id].should.eql(instances.devotes[0].id);
             done();
         });
     });
