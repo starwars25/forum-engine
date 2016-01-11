@@ -77,6 +77,7 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
             url: '/current-user',
             withCredentials: true
         }).then(function success(response) {
+            console.log(response.data);
             $scope.user = response.data;
         }, function failure(response) {
             alert('Error fetching user.');

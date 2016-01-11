@@ -11,5 +11,11 @@
             </div>
             <button type="submit" class="btn btn-primary">Change nickname</button>
         </form>
+        <h4>Topics with my opinions:</h4>
+        <ul>
+            <li ng-repeat="topic in user.topics">
+                <a href="/#/topics/{{topic.id}}">{{topic.theme}}</a>
+            </li>
+        </ul>
     </div>
 </div>
