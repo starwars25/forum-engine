@@ -193,5 +193,65 @@ describe('comments_controller', function () {
                 done();
             });
         });
-    })
+    });
+
+    describe('delete comment', function() {
+        // Not logged in
+        // No existing comment
+        // Wrong User
+        // OK
+        it('should return 401', function(done) {
+            request({
+                method: 'DELETE',
+                path: '/comments/' + instances.comments[0].id,
+                data: ''
+            }, function(err, res) {
+                res.status.should.eql(401);
+                done();
+            });
+        });
+        it('should return 404', function(done) {
+            request({
+                method: 'DELETE',
+                path: '/comments/' + 999999,
+                data: '',
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(404);
+                done();
+            });
+        });
+        it('should return 403', function(done) {
+            request({
+                method: 'DELETE',
+                path: '/comments/' + instances.comments[1].id,
+                data: '',
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(403);
+                done();
+            });
+        });
+        it('should return 200', function(done) {
+            request({
+                method: 'DELETE',
+                path: '/comments/' + instances.comments[0].id,
+                data: '',
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(200);
+                done();
+            });
+        });
+
+    });
 });

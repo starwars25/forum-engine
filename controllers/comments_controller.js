@@ -48,4 +48,25 @@ module.exports = function (app) {
             res.sendStatus(500);
         });
     });
+    app.delete('/comments/:id', currentUser, notLoggedIn, function(req, res) {
+        model.Comment.findById(req.params.id).then(function(comment) {
+            if (comment) {
+                if (comment.UserId === req.currentUser.id) {
+                    comment.destroy().then(function() {
+                        res.sendStatus(200);
+                    }).catch(function(error) {
+                        console.log(error);
+                        res.sendStatus(500);
+                    })
+                } else {
+                    res.sendStatus(403);
+                }
+            } else {
+                res.sendStatus(404);
+            }
+        }).catch(function(error) {
+            console.log(error);
+            res.sendStatus(500);
+        });
+    });
 };
