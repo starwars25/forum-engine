@@ -95,5 +95,103 @@ describe('comments_controller', function () {
         });
     });
 
+    describe('update comment', function() {
+        // Not logged in: 401
+        // No such comment: 404
+        // Wrong user: 403
+        // Invalid data: 400
+        // Valid: 200
 
+        it('should return 401', function(done) {
+            request({
+                method: 'PUT',
+                path: '/comments/' + instances.comments[0].id,
+                data: {
+                    comment: {
+                        content: 'Valid content'
+                    }
+
+                }
+            }, function(err, res) {
+                res.status.should.eql(401);
+                done();
+            });
+        });
+        it('should return 404', function(done) {
+            request({
+                method: 'PUT',
+                path: '/comments/' + 999999,
+                data: {
+                    comment: {
+                        content: 'Valid content'
+                    }
+
+                },
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(404);
+                done();
+            });
+        });
+        it('should return 403', function(done) {
+            request({
+                method: 'PUT',
+                path: '/comments/' + instances.comments[1].id,
+                data: {
+                    comment: {
+                        content: 'Valid content'
+                    }
+
+                },
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(403);
+                done();
+            });
+        });
+        it('should return 400', function(done) {
+            request({
+                method: 'PUT',
+                path: '/comments/' + instances.comments[0].id,
+                data: {
+                    comment: {
+                        content: 'Y'
+                    }
+
+                },
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(400);
+                done();
+            });
+        });
+        it('should return 200', function(done) {
+            request({
+                method: 'PUT',
+                path: '/comments/' + instances.comments[0].id,
+                data: {
+                    comment: {
+                        content: 'Valid content'
+                    }
+
+                },
+                cookies: {
+                    'user-id': 1,
+                    'token': 'token'
+                }
+            }, function(err, res) {
+                res.status.should.eql(200);
+                done();
+            });
+        });
+    })
 });
