@@ -27,7 +27,10 @@ describe('users_controller', function() {
             var json = JSON.parse(res.data);
             json.opinions[0].upvotes_count.should.eql(0);
             json.opinions[0].devotes_count.should.eql(1);
+            json.opinions[0].comments[0].UserId.should.eql(instances.comments[0].UserId);
+            json.opinions[0].comments[1].UserId.should.eql(instances.comments[1].UserId);
             json.votes.devotes[instances.opinions[0].id].should.eql(instances.devotes[0].id);
+
             done();
         });
     });
