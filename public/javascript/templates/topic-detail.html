@@ -25,6 +25,18 @@
                     <img ng-src="{{comment.avatar_url}}" class="comment-avatar">
                     <h5 class="comment-author">{{comment.author}}</h5>
                     <p class="comment-content">{{comment.content}}</p>
+                    <button ng-hide="wrongUserComment(comment) || editedComment === comment.id" ng-click="showEditCommentForm(comment)" class="btn btn-danger btn-comment">Edit</button>
+                    <button ng-hide="wrongUserComment(comment)" ng-click="deleteComment(comment)" class="btn btn-danger btn-comment">Delete</button>
+                    <form name="comment.editComment" ng-show="editedComment === comment.id"
+                          ng-submit="comment.editComment.$valid && editComment(comment)">
+                        <div class="form-group" ng-class="{'has-error': comment.editComment.commentInput.$invalid}">
+                            <label>Comment</label>
+                    <textarea ng-model="comment.content" name="commentInput" class="form-control" required
+                              minlength="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Comment</button>
+                        <button class="btn btn-default" ng-click="hideEditCommentForm()">Hide</button>
+                    </form>
                 </div>
             </div>
             <form name="opinion.commentOpinion" ng-show="commentedOpinionId === opinion.id"

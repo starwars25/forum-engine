@@ -153,6 +153,10 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
     $scope.wrongUser = function(opinion) {
         return opinion.vk_user_id != $cookies.get('user-id');
     };
+    $scope.wrongUserComment = function(comment) {
+        return comment.vk_user_id != $cookies.get('user-id');
+
+    };
     $scope.comment = function(opinion) {
         $http({
             method: 'POST',
@@ -194,8 +198,57 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
     $scope.hideCommentForm = function() {
         $scope.commentedOpinionId = null
     };
+    $scope.showEditCommentForm = function(comment) {
+        $scope.editedComment = comment.id;
+    };
+    $scope.hideEditCommentForm = function() {
+        $scope.editedComment = null
+    };
     $scope.hideEditForm = function() {
         $scope.editedOpinionId = null;
+    };
+    $scope.editComment = function(comment) {
+        $http({
+            method: 'PUT',
+            url: '/comments/' + comment.id,
+            data: {
+                comment: {
+                    content: comment.content
+                }
+            },
+            withCredentials: true
+        }).then(function success(res) {
+            $scope.hideEditCommentForm();
+        }, function failure(res) {
+            alert('error');
+        });
+    };
+    $scope.deleteComment = function(comment) {
+        $http({
+            method: 'DELETE',
+            url: '/comments/' + comment.id,
+            withCredentials: true
+        }).then(function success(res) {
+            var opinions = $scope.topic.opinions;
+            var found = false;
+            for(var i = 0; i < opinions.length; i++) {
+                var comments = opinions[i].comments;
+                if (comments) {
+                    for(var j = 0; j < comments.length; j++) {
+                        var c = comments[j];
+                        if (c == comment) {
+                            var index = comments.indexOf(comment);
+                            comments.splice(index, 1);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found) break;
+            }
+        }, function failure(res) {
+            alert('error');
+        });
     };
     $scope.updateOpinion = function(opinion) {
         $http({

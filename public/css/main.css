@@ -86,3 +86,8 @@ textarea {
     margin-top: 10px;
 
 }
+
+.btn-comment {
+    font-size: 75%;
+    padding: 3px 6px;
+}

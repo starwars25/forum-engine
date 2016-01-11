@@ -12,7 +12,7 @@ module.exports = function (app) {
                     UserId: req.currentUser.id,
                     content: req.body.comment.content
                 }).then(function(comment) {
-                    model.sequelize.query("SELECT Comments.OpinionId, Comments.UserId, Users.nickname AS \"author\", Users.avatar_url, Comments.id, Comments.content FROM Comments INNER JOIN Users ON Users.id = Comments.UserId WHERE Comments.id = ?;", {
+                    model.sequelize.query("SELECT Comments.OpinionId, Comments.UserId, Users.nickname AS \"author\", Users.avatar_url, Comments.id, Comments.content, Users.vk_user_id FROM Comments INNER JOIN Users ON Users.id = Comments.UserId WHERE Comments.id = ?;", {
                         type: model.sequelize.QueryTypes.SELECT,
                         replacements: [comment.id]
                     }).then(function(data) {
