@@ -112,7 +112,10 @@ var Comment = sequelize.define('Comment', {
     },
     content: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2]
+        }
     }
 });
 var Upvote = sequelize.define('Upvote', {

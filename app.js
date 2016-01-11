@@ -20,6 +20,7 @@ require('./controllers/users_controller')(app);
 require('./controllers/topics_controller')(app);
 require('./controllers/opinions_controller')(app);
 require('./controllers/upvotes_controller')(app);
+require('./controllers/comments_controller')(app);
 app.use(express.static('public'));
 var port = 3000;
 if (process.argv[3]) {
