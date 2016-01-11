@@ -1,29 +1,38 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
         <h3>{{topic.theme}}</h3>
-
         <div ng-repeat="opinion in topic.opinions" class="opinion">
             <div class="upvote">
-                <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)" ng-class="{'selected-upvote': opinion.vote == 'upvote'}"></span>
+                <span class="glyphicon glyphicon-chevron-up" ng-click="upvote(opinion)"
+                      ng-class="{'selected-upvote': opinion.vote == 'upvote'}"></span>
                 <span class="upvote-number">{{rating(opinion)}}</span>
                 <span class="upvote-down">
-                    <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)" ng-class="{'selected-upvote': opinion.vote == 'devote'}"></span>
-
+                    <span class="glyphicon glyphicon-chevron-down" ng-click="devote(opinion)"
+                          ng-class="{'selected-upvote': opinion.vote == 'devote'}"></span>
                 </span>
             </div>
             <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
             <h4>{{opinion.nickname}}</h4>
-
             <p>{{opinion.content}}</p>
-            <button class="btn btn-primary" ng-show="loggedIn()" ng-click="showCommentForm(opinion)" ng-hide="commentedOpinionId === opinion.id">Comment</button>
+            <button class="btn btn-primary" ng-show="loggedIn()" ng-click="showCommentForm(opinion)"
+                    ng-hide="commentedOpinionId === opinion.id">Comment
+            </button>
             <button class="btn btn-danger" ng-click="showEditForm(opinion)"
                     ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit
             </button>
-            <form name="opinion.commentOpinion" ng-show="commentedOpinionId === opinion.id" ng-submit="opinion.commentOpinion.$valid && comment(opinion)">
+            <div class="comments">
+                <div class="comment" ng-repeat="comment in opinion.comments">
+                    <img ng-src="{{comment.avatar_url}}" class="comment-avatar">
+                    <h5 class="comment-author">{{comment.author}}</h5>
+                    <p class="comment-content">{{comment.content}}</p>
+                </div>
+            </div>
+            <form name="opinion.commentOpinion" ng-show="commentedOpinionId === opinion.id"
+                  ng-submit="opinion.commentOpinion.$valid && comment(opinion)">
                 <div class="form-group" ng-class="{'has-error': opinion.commentOpinion.commentInput.$invalid}">
                     <label>Comment</label>
-                    <textarea ng-model="opinion.comment" name="commentInput" class="form-control" required minlength="2"></textarea>
-
+                    <textarea ng-model="opinion.comment" name="commentInput" class="form-control" required
+                              minlength="2"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Comment</button>
                 <button class="btn btn-default" ng-click="hideCommentForm()">Hide</button>
@@ -37,7 +46,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Edit</button>
                 <button class="btn btn-default" ng-click="hideEditForm()">Hide</button>
-
             </form>
         </div>
         <div class="clearfix"></div>

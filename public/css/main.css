@@ -60,3 +60,29 @@ textarea {
 }
 .topic-author {
 }
+
+/* comments */
+
+.comment-avatar {
+    width: 25px;
+    float: left;
+    margin-right: 10px;
+}
+.comment-content {
+}
+
+.comment-author {
+    margin-top: 0;
+}
+.comments {
+    margin-left: 50px;
+    border-left: 1px solid #e5e5e5;
+    padding-left: 10px;
+}
+
+.comment {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 7px;
+    margin-top: 10px;
+
+}
