@@ -14,8 +14,8 @@
             <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
             <h4>{{opinion.nickname}}</h4>
             <p>{{opinion.content}}</p>
-            <button class="btn btn-primary" ng-show="loggedIn()" ng-click="showCommentForm(opinion)"
-                    ng-hide="commentedOpinionId === opinion.id">Comment
+            <button class="btn btn-primary" ng-show="loggedIn() && !(commentedOpinionId === opinion.id)" ng-click="showCommentForm(opinion)"
+                    >Comment
             </button>
             <button class="btn btn-danger" ng-click="showEditForm(opinion)"
                     ng-hide="editedOpinionId === opinion.id || wrongUser(opinion)">Edit
@@ -68,5 +68,23 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+        <div class="topic-pagination">
+                <ul class="pagination">
+                    <li>
+                        <a href="" ng-click="fetchOpinions(1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a href="" ng-show="pagination.previosPage()" ng-click="fetchOpinions(pagination.previosPage())">{{pagination.previosPage()}}</a></li>
+                    <li class="active"><a href="" ng-show="pagination.currentPage()" ng-click="fetchOpinions(pagination.currentPage())" >{{pagination.currentPage()}}</a></li>
+                    <li><a href="" ng-show="pagination.nextPage()" ng-click="fetchOpinions(pagination.nextPage())">{{pagination.nextPage()}}</a></li>
+                    <li>
+                        <a href="" aria-label="Next" ng-click="fetchOpinions(topic.pageCount)">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+
+        </div>
     </div>
 </div>

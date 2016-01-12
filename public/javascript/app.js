@@ -103,6 +103,7 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     fetchUser();
 }]);
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', '$common', function ($scope, $routeParams, $http, $cookies, $common) {
+    $scope.loggedIn = $common.loggedIn;
     $scope.rating = function(opinion) {
         return opinion.upvotes_count - opinion.devotes_count;
     };
@@ -176,10 +177,10 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
             alert('error');
         });
     };
-    $scope.fetchOpinions = function () {
+    $scope.fetchOpinions = function (page) {
         $http({
             method: 'GET',
-            url: '/topics/' + $routeParams.id
+            url: '/topics/' + $routeParams.id + '?page=' + page
         }).then(function success(response) {
             console.log(response.data);
             $scope.topic = response.data;
@@ -269,7 +270,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
             console.log('Error occurred while updating opinion.')
         });
     };
-    $scope.fetchOpinions();
+    $scope.fetchOpinions(1);
     $scope.newOpinion = {};
     $scope.createOpinion = function () {
         $http({
@@ -303,6 +304,32 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
             }
         }
     };
+
+    $scope.pagination = {
+        currentPage: function() {
+            return $scope.topic.page;
+        },
+        previosPage: function() {
+            if ($scope.topic.page - 1 > 0) {
+                return $scope.topic.page - 1
+            } else {
+                return null;
+            }
+        },
+        nextPage: function() {
+            if ($scope.topic.page + 1 <= $scope.topic.pageCount) {
+                return $scope.topic.page + 1
+            } else {
+                return null;
+            }
+        },
+        beforeLastPage: function() {
+            if ($scope.topic.pageCount - 1 > 0)
+                return $scope.topic.pageCount - 1;
+            else
+                return null;
+        }
+    }
 }]);
 app.directive('appHeader', function () {
     return {
