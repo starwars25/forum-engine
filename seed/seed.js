@@ -2,6 +2,7 @@
 var model = require('../model');
 var bcrypt = require('bcrypt');
 var async = require('async');
+var faker = require('faker');
 module.exports = function(token, callback) {
     var instances = {
         users: [],
@@ -97,34 +98,41 @@ module.exports = function(token, callback) {
                 },
                 function(callback) {
                     // create opinions
-                    async.series([
-                        function(callback) {
-                            model.Opinion.create({
+
+                    var opinions = [];
+                    for(var i = 0; i < 100; i++) {
+                        if (i === 0) {
+                            opinions.push({
                                 content: 'TestContent',
                                 root: false,
                                 TopicId: instances.topics[0].id,
                                 UserId: instances.users[0].id
-                            }).then(function(opinion) {
-                                instances.opinions.push(opinion);
-                                callback();
-                            }).catch(function(error) {
-                                callback(error);
                             });
-                        }, function(callback) {
-                            model.Opinion.create({
+                        } else if (i === 1) {
+                            opinions.push({
                                 content: 'TestContent',
                                 root: false,
                                 TopicId: instances.topics[0].id,
                                 UserId: instances.users[1].id
-                            }).then(function(opinion) {
-                                instances.opinions.push(opinion);
-                                callback();
-                            }).catch(function(error) {
-                                callback(error);
                             });
+                        } else {
+                            opinions.push({
+                                content: faker.lorem.sentence(),
+                                root: false,
+                                TopicId: instances.topics[0].id,
+                                UserId: instances.users[0].id
+                            })
                         }
-                    ], function(err, res) {
-                        if(err) callback(err);
+                    }
+                    async.eachSeries(opinions, function(item ,callback) {
+                        model.Opinion.create(item).then(function(opinion) {
+                            instances.opinions.push(opinion);
+                            callback();
+                        }).catch(function(error) {
+                            callback(error);
+                        });
+                    }, function(err) {
+                        if (err) callback(err);
                         else callback();
                     });
 
