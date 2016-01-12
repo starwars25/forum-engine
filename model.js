@@ -3,16 +3,20 @@ var Sequelize = require('sequelize');
 console.log(process.env.NODE_ENVIRONMENT);
 var path = __dirname + '/db/';
 var database = null;
+var logging;
 switch (process.env.NODE_ENVIRONMENT) {
     case 'test':
         database = 'test';
         path += 'test.sqlite';
+        logging = false;
         break;
     default:
         database = 'development';
         path += 'development.sqlite';
+        logging = true;
         break;
 }
+
 var sequelize = new Sequelize(database, null, null, {
     host: 'localhost',
     dialect: 'sqlite',
@@ -21,7 +25,8 @@ var sequelize = new Sequelize(database, null, null, {
         min: 0,
         idle: 10000
     },
-    storage: path
+    storage: path,
+    logging: logging
 });
 var User = sequelize.define('User', {
     id: {

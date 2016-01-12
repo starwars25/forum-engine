@@ -29,14 +29,43 @@ module.exports = function (app) {
         });
     });
     app.get('/topics', function (req, res) {
-        model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id AS \"user_id\", Users.avatar_url, Users.nickname FROM Topics INNER JOIN Users ON Users.id = Topics.UserId ORDER BY Topics.createdAt DESC", {
-            type: model.sequelize.QueryTypes.SELECT
-        }).then(function (topics) {
-            res.json(topics);
-        }).catch(function (error) {
-            console.log(error);
-            res.sendStatus(500);
-        });
+        var json = {};
+        async.parallel([
+            function(callback) {
+                json.page = Number(req.query.page);
+                var offset = 20 * (req.query.page - 1);
+                model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id AS \"user_id\", Users.avatar_url, Users.nickname FROM Topics INNER JOIN Users ON Users.id = Topics.UserId ORDER BY Topics.createdAt DESC LIMIT 20 OFFSET ?;", {
+                    type: model.sequelize.QueryTypes.SELECT,
+                    replacements: [offset]
+                }).then(function (topics) {
+                    json.topics = topics;
+                    callback();
+                }).catch(function (error) {
+                    console.log(error);
+                    callback(error);
+                });
+            },
+            function(callback) {
+                model.sequelize.query("SELECT COUNT(Topics.id) AS \"count\" FROM Topics;", {
+                    type: model.sequelize.QueryTypes.SELECT
+                }).then(function(data) {
+                    console.log(data);
+                    json.pageCount = Math.ceil(data[0].count / 20);
+                    callback();
+                }).catch(function(error) {
+                    console.log(error);
+                    callback(error);
+                });
+            }
+        ], function(err, results) {
+            if (err) {
+                console.log(err);
+                res.sendStatus(400);
+            } else {
+                res.json(json);
+            }
+        })
+
     });
     app.get('/topics/:id/', currentUser, function (req, res) {
         var json = {};

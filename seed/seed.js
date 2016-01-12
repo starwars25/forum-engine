@@ -85,16 +85,30 @@ module.exports = function(token, callback) {
                 },
                 function(callback) {
                     // create topics
-                    model.Topic.create({
+                    var topics = [];
+                    topics.push({
                         theme: 'TestTheme',
                         closed: false,
                         UserId: instances.users[0].id
-                    }).then(function(instance) {
-                        instances.topics.push(instance);
-                        callback();
-                    }).catch(function(error) {
-                        callback(error);
-                    })
+                    });
+                    for(var i = 0; i < 99; i++) {
+                        topics.push({
+                            theme: 'Test theme',
+                            closed: false,
+                            UserId: instances.users[0].id
+                        });
+                    }
+                    async.eachSeries(topics, function(item, callback) {
+                        model.Topic.create(item).then(function(topic) {
+                            instances.topics.push(topic);
+                            callback();
+                        }).catch(function(error) {
+                            callback(error);
+                        });
+                    }, function(err) {
+                        if (err) callback(err);
+                        else callback();
+                    });
                 },
                 function(callback) {
                     // create opinions
