@@ -29,6 +29,7 @@ module.exports = function (app) {
         });
     });
     app.get('/topics', function (req, res) {
+        console.log(req.query);
         var json = {};
         async.parallel([
             function(callback) {

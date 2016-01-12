@@ -1,18 +1,45 @@
 var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
 app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
-    $scope.fetchTopics = function () {
+    $scope.fetchTopics = function (page) {
         $http({
             method: 'GET',
-            url: '/topics'
+            url: '/topics?page=' + page
         }).then(function success(response) {
             console.log(response.data);
-            $scope.topics = response.data;
+            $scope.topics = response.data.topics;
+            $scope.page = response.data.page;
+            $scope.pageCount = response.data.pageCount;
         }, function failure(response) {
             alert('Error while fetching topics.');
         });
     };
-    $scope.fetchTopics();
+    $scope.fetchTopics(1);
+    $scope.pagination = {
+        currentPage: function() {
+            return $scope.page;
+        },
+        previosPage: function() {
+            if ($scope.page - 1 > 0) {
+                return $scope.page - 1
+            } else {
+                return null;
+            }
+        },
+        nextPage: function() {
+            if ($scope.page + 1 <= $scope.pageCount) {
+                return $scope.page + 1
+            } else {
+                return null;
+            }
+        },
+        beforeLastPage: function() {
+            if ($scope.pageCount - 1 > 0)
+                return $scope.pageCount - 1;
+            else
+                return null;
+        }
+    }
 }]);
 app.factory('$common', ['$cookies', '$window', function ($cookies, $window) {
     return {

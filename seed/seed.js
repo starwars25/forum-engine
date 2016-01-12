@@ -93,7 +93,7 @@ module.exports = function(token, callback) {
                     });
                     for(var i = 0; i < 99; i++) {
                         topics.push({
-                            theme: 'Test theme',
+                            theme: faker.lorem.sentence(),
                             closed: false,
                             UserId: instances.users[0].id
                         });

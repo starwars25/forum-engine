@@ -11,5 +11,24 @@
 
             <div class="clearfix"></div>
         </div>
+        <div class="topic-pagination">
+            <ul class="pagination">
+                <li>
+                    <a href="" ng-click="fetchTopics(1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="" ng-show="pagination.previosPage()" ng-click="fetchTopics(pagination.previosPage())">{{pagination.previosPage()}}</a></li>
+                <li class="active"><a href="" ng-show="pagination.currentPage()" ng-click="fetchTopics(pagination.currentPage())" >{{pagination.currentPage()}}</a></li>
+                <li><a href="" ng-show="pagination.nextPage()" ng-click="fetchTopics(pagination.nextPage())">{{pagination.nextPage()}}</a></li>
+                <li>
+                    <a href="" aria-label="Next" ng-click="fetchTopics(pageCount)">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
     </div>
+
 </div>
