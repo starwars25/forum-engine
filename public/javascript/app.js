@@ -200,6 +200,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
             console.log(res.data);
             if (!opinion.comments) opinion.comments = [];
             opinion.comments.push(res.data);
+            $scope.commentedOpinionId = null;
         }, function failure(res) {
             alert('error');
         });
