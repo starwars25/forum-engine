@@ -4,6 +4,7 @@ module.exports = function (app) {
     var notLoggedIn = require('../middleware/not_logged_in');
     var bodyParser = require('body-parser');
     var async = require('async');
+    var markdown = require('markdown').markdown;
 
 
     app.post('/topics', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
@@ -12,9 +13,10 @@ module.exports = function (app) {
             theme: req.body.topic.theme,
             closed: false
         }).then(function (instance) {
+            var content = markdown.toHTML(req.body.topic.content);
             model.Opinion.create({
                 UserId: req.currentUser.id,
-                content: req.body.topic.content,
+                content: content,
                 TopicId: instance.id,
                 root: true
             }).then(function (instance) {

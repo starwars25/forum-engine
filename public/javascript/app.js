@@ -1,4 +1,9 @@
-var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
+var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies', 'ngSanitize']);
+app.filter("sanitize", ['$sce', function($sce) {
+    return function(htmlCode){
+        return $sce.trustAsHtml(htmlCode);
+    }
+}]);
 app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
     $scope.order = '1';
@@ -149,7 +154,8 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
     };
     fetchUser();
 }]);
-app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', '$common', function ($scope, $routeParams, $http, $cookies, $common) {
+app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', '$common', '$sanitize', function ($scope, $routeParams, $http, $cookies, $common, $sanitize) {
+    $scope.sanitize = $sanitize;
     $scope.loggedIn = $common.loggedIn;
     $scope.rating = function(opinion) {
         return opinion.upvotes_count - opinion.devotes_count;
@@ -335,7 +341,7 @@ app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies'
                 'content-type': 'application/json'
             }
         }).then(function success(res) {
-            $scope.fetchOpinions();
+            $scope.fetchOpinions($scope.topic.page);
             $scope.createOpinionForm.$setPristine();
         }, function failure(res) {
             alert('Error occurred while posting opinion.');

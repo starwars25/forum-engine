@@ -2,13 +2,15 @@ var bodyParser = require('body-parser');
 var currentUser = require('../middleware/authorize')();
 var notLoggedIn = require('../middleware/not_logged_in');
 var model = require('../model');
+var markdown = require('markdown').markdown;
 console.log('Importing opinions');
 module.exports = function (app) {
 
     app.post('/opinions', bodyParser.json(), currentUser, notLoggedIn, function (req, res, next) {
         console.log('Creating opinion');
+        var content = markdown.toHTML(req.body.opinion.content);
         model.Opinion.create({
-            content: req.body.opinion.content,
+            content: content,
             UserId: req.currentUser.id,
             TopicId: req.body.opinion.topic_id,
             root: false

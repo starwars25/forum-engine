@@ -15,6 +15,7 @@
     "cookie-parser": "^1.4.0",
     "express": "^4.13.3",
     "faker": "^3.0.1",
+    "markdown": "^0.5.0",
     "sequelize": "^3.16.0",
     "should": "^8.0.2",
     "sqlite3": "^3.1.1",

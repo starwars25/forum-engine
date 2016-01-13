@@ -13,7 +13,8 @@
             </div>
             <img ng-src="{{opinion.avatar_url}}" class="avatar-small"/>
             <h4>{{opinion.nickname}}</h4>
-            <p>{{opinion.content}}</p>
+            <p ng-bind-html="opinion.content | sanitize"></p>
+
             <button class="btn btn-primary" ng-show="loggedIn() && !(commentedOpinionId === opinion.id)" ng-click="showCommentForm(opinion)"
                     >Comment
             </button>
