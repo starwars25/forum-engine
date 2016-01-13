@@ -17,17 +17,23 @@ switch (process.env.NODE_ENVIRONMENT) {
         break;
 }
 
-var sequelize = new Sequelize(database, null, null, {
-    host: 'localhost',
-    dialect: 'sqlite',
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-    storage: path,
-    logging: logging
-});
+var sequelize = null;
+if(process.env.NODE_ENVIRONMENT === 'production') {
+    sequelize = new Sequelize(process.env.DATABASE_URL);
+
+} else {
+    sequelize = new Sequelize(database, null, null, {
+        host: 'localhost',
+        dialect: 'sqlite',
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000
+        },
+        storage: path,
+        logging: logging
+    });
+}
 var User = sequelize.define('User', {
     id: {
         type: Sequelize.INTEGER,
