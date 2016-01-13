@@ -22,7 +22,13 @@ module.exports = function (app) {
         });
     });
     app.put('/update-user', bodyParser.json(), currentUser, notLoggedIn, function (req, res) {
-        req.currentUser.update({nickname: req.body.nickname}).then(function (instance) {
+        var params = {};
+        if (req.body.nickname) params.nickname = req.body.nickname;
+        if (req.body.avatar_url) {
+            params.avatar_url = req.body.avatar_url;
+            params.own_avatar = true;
+        }
+        req.currentUser.update(params).then(function (instance) {
             res.sendStatus(201);
         }).catch(function (error) {
             console.log(error);

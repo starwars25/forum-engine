@@ -67,6 +67,11 @@ var User = sequelize.define('User', {
     token_digest: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    own_avatar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 });
 var Topic = sequelize.define('Topic', {

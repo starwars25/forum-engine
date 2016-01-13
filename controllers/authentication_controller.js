@@ -55,7 +55,11 @@ module.exports = function(app) {
                                     if (err) {
                                         sendError(res);
                                     } else {
-                                        instance.update({name: name, avatar_url: user.avatar_url, token_digest: hash}).then(function(instance) {
+                                        var params = {name: name, token_digest: hash};
+                                        if(!instance.own_avatar) {
+                                            params.avatar_url = user.avatar_url
+                                        }
+                                        instance.update(params).then(function(instance) {
                                             sendAuthCredentials(res, token);
                                         }).catch(function(error) {
                                             console.log(error);

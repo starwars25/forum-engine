@@ -11,11 +11,23 @@
             </div>
             <button type="submit" class="btn btn-primary">Change nickname</button>
         </form>
+        <form ng-submit="updateAvatar()">
+            <div class="form-group">
+                <label>Customize avatar</label>
+                <input type="checkbox" ng-model="customizeAvatar">
+            </div>
+            <div class="form-group" ng-show="customizeAvatar">
+                <label>Avatar URL</label>
+                <input type="url" ng-model="user.new_avatar_url" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Change avatar</button>
+        </form>
         <h4>Topics with my opinions:</h4>
         <ul>
             <li ng-repeat="topic in user.topics">
                 <a href="/#/topics/{{topic.id}}">{{topic.theme}}</a>
             </li>
         </ul>
+
     </div>
 </div>

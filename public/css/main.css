@@ -8,7 +8,6 @@
     position: relative;
     height: 50px;
     margin-right: 10px;
-    width: 25px;
 }
 .selected-upvote {
     color: #c9302c;
@@ -22,7 +21,9 @@
     display: block;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
 }
 .avatar-small {
     float: left;

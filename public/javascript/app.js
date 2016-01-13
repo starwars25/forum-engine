@@ -127,6 +127,20 @@ app.controller('ProfileCtrl', ['$scope', '$common', '$window', '$http', function
             alert('Error updating nickname.');
         });
     };
+    $scope.updateAvatar = function() {
+        $http({
+            method: 'PUT',
+            url: '/update-user',
+            data: {
+                avatar_url: $scope.user.new_avatar_url
+            },
+            withCredentials: true
+        }).then(function success(response) {
+            $scope.user.avatar_url = $scope.user.new_avatar_url
+        }, function failure(response) {
+
+        });
+    };
     fetchUser();
 }]);
 app.controller('TopicDetailCtrl', ['$scope', '$routeParams', '$http', '$cookies', '$common', function ($scope, $routeParams, $http, $cookies, $common) {
