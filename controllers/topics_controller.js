@@ -39,9 +39,9 @@ module.exports = function (app) {
             function(callback) {
                 json.page = Number(req.query.page);
                 var offset = 20 * (req.query.page - 1);
-                model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id AS \"user_id\", Users.avatar_url, Users.nickname, COUNT(Opinions.id) FROM Topics INNER JOIN Users ON Users.id = Topics.UserId INNER JOIN Opinions ON Opinions.TopicId = Topics.id GROUP BY Topics.id, Topics.theme, user_id, Users.avatar_url, Users.nickname ORDER BY ? DESC LIMIT 20 OFFSET ?;", {
+                model.Topic.sequelize.query("SELECT Topics.id, Topics.theme, Users.id AS \"user_id\", Users.avatar_url, Users.nickname, COUNT(Opinions.id) FROM Topics INNER JOIN Users ON Users.id = Topics.UserId INNER JOIN Opinions ON Opinions.TopicId = Topics.id GROUP BY Topics.id, Topics.theme, user_id, Users.avatar_url, Users.nickname ORDER BY " + orderBy +" LIMIT 20 OFFSET ?;", {
                     type: model.sequelize.QueryTypes.SELECT,
-                    replacements: [orderBy, offset]
+                    replacements: [offset]
                 }).then(function (topics) {
                     json.topics = topics;
                     callback();

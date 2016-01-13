@@ -1,11 +1,17 @@
 var app = angular.module('RealtimeForum', ['ngRoute', 'ngCookies']);
 app.controller('IndexCtrl', ['$scope', '$common', '$http', function ($scope, $common, $http) {
     $scope.loggedIn = $common.loggedIn;
+    $scope.order = '1';
     $scope.fetchTopics = function (page) {
-        $http({
+        console.log($scope.order);
+        var params = {
             method: 'GET',
             url: '/topics?page=' + page
-        }).then(function success(response) {
+        };
+        if($scope.order == 2) {
+           params.url = '/topics?page=' + page + '&order=opinions'
+        }
+        $http(params).then(function success(response) {
             console.log(response.data);
             $scope.topics = response.data.topics;
             $scope.page = response.data.page;
